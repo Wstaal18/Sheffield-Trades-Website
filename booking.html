@@ -207,6 +207,7 @@
             menu.classList.toggle('hidden');
         });
 
+        
         // Date validation for Thursdays and Fridays
         document.getElementById('bookingDate').addEventListener('change', function() {
             const selectedDate = new Date(this.value);
@@ -250,6 +251,12 @@
             }
         });
 
+         // Utility: format YYYY-MM-DD -> DD/MM/YYYY
+            const toUKDate = (iso) => {
+                if (!iso) return '';
+                const [y, m, d] = iso.split('-');
+                return `${d}/${m}/${y}`;
+            };
         // Form submission
         document.getElementById('bookingForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -292,8 +299,8 @@
                 alert('Please specify your occasion');
                 return;
             }
-
-            // Collect form data
+               // Collect form data
+            
             const formData = {
                 date: document.getElementById('bookingDate').value,
                 time: timeSlot === 'custom' ? document.getElementById('customTime').value : timeSlot,
@@ -302,100 +309,56 @@
                 contactName: document.getElementById('contactName').value,
                 contactNumber: document.getElementById('contactNumber').value,
                 contactEmail: document.getElementById('contactEmail').value,
-                occasion: occasion,
+                occasion: document.getElementById('occasion').value,
                 birthdayAge: document.getElementById('birthdayAge')?.value || '',
                 otherOccasion: document.getElementById('otherOccasion')?.value || '',
                 specialRequests: document.getElementById('specialRequests').value
             };
+          
 
             // Prepare email content
-            const subject = `New Booking Request - ${formData.contactName}`;
-            let body = `
-                <h2>New Booking Request</h2>
-                <table style="border-collapse: collapse; width: 100%;">
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Booking Date</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.date}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Booking Time</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.time}</td>
-                    </tr>
-                    ${formData.arrivalTime ? `
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Arrival Time</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.arrivalTime}</td>
-                    </tr>
-                    ` : ''}
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Number of People</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.numberOfPeople}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Contact Name</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.contactName}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Contact Number</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.contactNumber}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Email</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.contactEmail}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Occasion</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.occasion}</td>
-                    </tr>
-                    ${formData.birthdayAge ? `
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Birthday Age</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.birthdayAge}</td>
-                    </tr>
-                    ` : ''}
-                    ${formData.otherOccasion ? `
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Other Occasion</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.otherOccasion}</td>
-                    </tr>
-                    ` : ''}
-                    ${formData.specialRequests ? `
-                    <tr>
-                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Special Requests</td>
-                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.specialRequests}</td>
-                    </tr>
-                    ` : ''}
-                </table>
-            `;
+            // Build FormData with nice labels (what appears in the email)
+        const fd = new FormData();
+        const subject = `New Booking Request - ${formData.contactName}`;
+        fd.append('_subject', subject);
+        fd.append('_replyto', formData.contactEmail);
+        fd.append('_template', 'table'); // or 'box' if you prefer
+        fd.append('_captcha', 'true');   // change to 'false' if you disable captcha
+        fd.append('_honey', '');         // honeypot (bots fill it)
 
-            // Send email using FormSubmit.co
-            fetch('https://formsubmit.co/ajax/info.sheffieldtrades@gmail.com', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    _subject: subject,
-                    _replyto: formData.contactEmail,
-                    message: body,
-                    _template: 'table'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Thank you for your booking request! We will contact you shortly to confirm.');
-                this.reset();
-                document.getElementById('birthdayAgeField').classList.add('hidden');
-                document.getElementById('otherOccasionField').classList.add('hidden');
-                document.getElementById('customTimeField').classList.add('hidden');
-                document.getElementById('arrivalTimeField').classList.add('hidden');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('There was an error submitting your booking. Please try again or contact us directly.');
-            });
+        // Your preferred field labels:
+        fd.append('Name', formData.contactName);
+        fd.append('Email', formData.contactEmail);
+        fd.append('Phone', formData.contactNumber);
+        fd.append('Party Size', formData.numberOfPeople);
+        fd.append('Date for Booking', toUKDate(formData.date));
+        fd.append('Time', formData.time);
+        if (formData.arrivalTime) fd.append('Arrival Time', formData.arrivalTime);
+        fd.append('Occasion', formData.occasion);
+        if (formData.birthdayAge) fd.append('Birthday Age', formData.birthdayAge);
+        if (formData.otherOccasion) fd.append('Other Occasion', formData.otherOccasion);
+        if (formData.specialRequests) fd.append('Special Requests', formData.specialRequests);
+
+        // Optional: redirect after submission
+        // fd.append('_next', 'https://yourdomain.com/thank-you.html');
+
+        fetch('https://formsubmit.co/info.sheffieldtrades@gmail.com', {
+        method: 'POST',
+        body: fd
+        })
+        .then(() => {
+        alert('Thank you for your booking request! We will contact you shortly to confirm.');
+        e.target.reset();
+        document.getElementById('birthdayAgeField').classList.add('hidden');
+        document.getElementById('otherOccasionField').classList.add('hidden');
+        document.getElementById('customTimeField').classList.add('hidden');
+        document.getElementById('arrivalTimeField').classList.add('hidden');
+        })
+        .catch((error) => {
+        console.error('Error:', error);
+        alert('There was an error submitting your booking. Please try again or contact us directly.');
         });
-    </script>
+    });
+</script>
 </body>
 </html>
