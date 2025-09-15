@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Booking | Sheffield Trades & Labour Club</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .booking-form {
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-red-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i data-feather="flag" class="text-yellow-400"></i>
+                    <span class="font-bold text-xl font-serif">Sheffield Trades & Labour Club</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
+                    <a href="index.html#contact" class="hover:text-yellow-300 transition">Contact</a>
+                    <a href="booking.html" class="hover:text-yellow-300 transition">Make a Booking</a>
+                </div>
+                <button class="md:hidden focus:outline-none" id="menu-toggle">
+                    <i data-feather="menu"></i>
+                </button>
+            </div>
+            <!-- Mobile menu -->
+            <div class="md:hidden hidden pt-4" id="mobile-menu">
+                <a href="index.html" class="block py-2 hover:text-yellow-300 transition">Home</a>
+                <a href="index.html#contact" class="block py-2 hover:text-yellow-300 transition">Contact</a>
+                <a href="booking.html" class="block py-2 hover:text-yellow-300 transition">Make a Booking</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Booking Form Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="booking-form mx-auto bg-white p-8 rounded-lg shadow-lg">
+                <h1 class="text-3xl font-serif font-bold text-center mb-8 text-gray-800">Make a Booking</h1>
+                
+                <form id="bookingForm" class="space-y-6">
+                    <div>
+                        <label for="bookingDate" class="block text-gray-700 font-medium mb-2">Booking Date*</label>
+                        <input type="date" id="bookingDate" name="bookingDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        <p class="text-sm text-gray-500 mt-1">Bookings available for Thursdays and Fridays only</p>
+                    </div>
+
+                    <div>
+                        <label for="bookingTime" class="block text-gray-700 font-medium mb-2">Booking Time*</label>
+                        <select id="bookingTime" name="bookingTime" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                            <option value="">Select a time slot</option>
+                            <option value="12:00 PM - 5:00 PM">12:00 PM - 5:00 PM</option>
+                            <option value="7:00 PM - 12:00 AM">7:00 PM - 12:00 AM</option>
+                            <option value="custom">All Day (Custom Time)</option>
+                        </select>
+                    </div>
+
+                    <div id="customTimeField" class="hidden">
+                        <label for="customTime" class="block text-gray-700 font-medium mb-2">Enter Custom Time*</label>
+                        <input type="text" id="customTime" name="customTime" placeholder="e.g. 10:00 AM - 8:00 PM" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
+                    </div>
+
+                    <div id="arrivalTimeField" class="hidden">
+                        <label for="arrivalTime" class="block text-gray-700 font-medium mb-2">When are you due to arrive?*</label>
+                        <input type="text" id="arrivalTime" name="arrivalTime" placeholder="e.g. 3:00 PM" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
+                    </div>
+
+                    <div>
+                        <label for="numberOfPeople" class="block text-gray-700 font-medium mb-2">Number of People*</label>
+                        <input type="number" id="numberOfPeople" name="numberOfPeople" min="1" max="120" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        <p class="text-sm text-gray-500 mt-1">Maximum of 120 people per booking</p>
+                    </div>
+
+                    <div>
+                        <label for="contactName" class="block text-gray-700 font-medium mb-2">Contact Name*</label>
+                        <input type="text" id="contactName" name="contactName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                    </div>
+
+                    <div>
+                        <label for="contactNumber" class="block text-gray-700 font-medium mb-2">Contact Number*</label>
+                        <input type="tel" id="contactNumber" name="contactNumber" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                    </div>
+
+                    <div>
+                        <label for="contactEmail" class="block text-gray-700 font-medium mb-2">Email Address*</label>
+                        <input type="email" id="contactEmail" name="contactEmail" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                    </div>
+
+                    <div>
+                        <label for="occasion" class="block text-gray-700 font-medium mb-2">Occasion*</label>
+                        <select id="occasion" name="occasion" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                            <option value="">Select an occasion</option>
+                            <option value="Anniversary">Anniversary</option>
+                            <option value="Wake">Wake</option>
+                            <option value="Retirement Party">Retirement Party</option>
+                            <option value="Birthday">Birthday (Enter age below)</option>
+                            <option value="Other">Other (Please specify)</option>
+                        </select>
+                    </div>
+
+                    <div id="birthdayAgeField" class="hidden">
+                        <label for="birthdayAge" class="block text-gray-700 font-medium mb-2">Birthday Age*</label>
+                        <input type="number" id="birthdayAge" name="birthdayAge" min="22" max="99" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
+                        <p class="text-sm text-gray-500 mt-1">We do not host 21st birthday parties</p>
+                    </div>
+
+                    <div id="otherOccasionField" class="hidden">
+                        <label for="otherOccasion" class="block text-gray-700 font-medium mb-2">Please specify occasion*</label>
+                        <input type="text" id="otherOccasion" name="otherOccasion" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
+                    </div>
+
+                    <div>
+                        <label for="specialRequests" class="block text-gray-700 font-medium mb-2">Special Requests</label>
+                        <textarea id="specialRequests" name="specialRequests" rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                        Submit Booking Request
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Find Us Section -->
+    <section id="contact" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-serif font-bold text-center mb-12 text-gray-800">Find Us</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contact Information</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i data-feather="map-pin" class="mr-3 text-red-700 mt-1"></i>
+                            <span>200 Duke Street, Sheffield, S2 5QQ</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-feather="phone" class="mr-3 text-red-700 mt-1"></i>
+                            <span>0114 275 4671</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-feather="mail" class="mr-3 text-red-700 mt-1"></i>
+                            <span>info.sheffieldtrades@gmail.com</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-feather="clock" class="mr-3 text-red-700 mt-1"></i>
+                            <span>Mon, Wed, Fri, Sat, Sun: 12pm-5pm & 7pm-12am<br>Tues & Thu: 7pm-11:30pm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="bg-gray-200 h-64 rounded-lg overflow-hidden">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2379.123456789012!2d-1.4691234!3d53.3791234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48798283a6c6f8a5%3A0x3b8f0e4b4b4b4b4b!2s200+Duke+St%2C+Sheffield+S2+5QQ!5e0!3m2!1sen!2suk!4v1234567890123!5m2!1sen!2suk" 
+                                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <i data-feather="flag" class="text-yellow-400"></i>
+                        <span class="font-bold text-xl font-serif">Sheffield Trades & Labour Club</span>
+                    </div>
+                    <p class="mt-2 text-gray-400">Est. 1981</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="https://www.facebook.com/people/Sheffield-Trades-Labour-Club/100063482235781/" target="_blank" class="hover:text-yellow-300 transition">
+                        <i data-feather="facebook"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@SunNightSheffTradesLabour" target="_blank" class="hover:text-yellow-300 transition">
+                        <i data-feather="youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400">
+                <p>&copy; 2023 Sheffield Trades & Labour Club. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize feather icons
+        feather.replace();
+
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Date validation for Thursdays and Fridays
+        document.getElementById('bookingDate').addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            const day = selectedDate.getDay(); // 0=Sunday, 4=Thursday, 5=Friday
+            
+            if (day !== 4 && day !== 5) {
+                alert('Bookings are only available for Thursdays and Fridays. Please select a valid date.');
+                this.value = '';
+            }
+        });
+
+        // Show/hide custom time field and arrival time field
+        document.getElementById('bookingTime').addEventListener('change', function() {
+            const customTimeField = document.getElementById('customTimeField');
+            const arrivalTimeField = document.getElementById('arrivalTimeField');
+            
+            if (this.value === 'custom') {
+                customTimeField.classList.remove('hidden');
+                arrivalTimeField.classList.add('hidden');
+            } else if (this.value === '12:00 PM - 5:00 PM' || this.value === '7:00 PM - 12:00 AM') {
+                customTimeField.classList.add('hidden');
+                arrivalTimeField.classList.remove('hidden');
+            } else {
+                customTimeField.classList.add('hidden');
+                arrivalTimeField.classList.add('hidden');
+            }
+        });
+
+        // Show/hide additional fields based on occasion selection
+        document.getElementById('occasion').addEventListener('change', function() {
+            const birthdayField = document.getElementById('birthdayAgeField');
+            const otherField = document.getElementById('otherOccasionField');
+            
+            birthdayField.classList.add('hidden');
+            otherField.classList.add('hidden');
+            
+            if (this.value === 'Birthday') {
+                birthdayField.classList.remove('hidden');
+            } else if (this.value === 'Other') {
+                otherField.classList.remove('hidden');
+            }
+        });
+
+        // Form submission
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate number of people
+            const numberOfPeople = parseInt(document.getElementById('numberOfPeople').value);
+            if (numberOfPeople > 120) {
+                alert('Maximum booking size is 120 people. Please adjust your booking.');
+                return;
+            }
+
+            // Validate time selection
+            const timeSlot = document.getElementById('bookingTime').value;
+            if (timeSlot === 'custom') {
+                const customTime = document.getElementById('customTime').value.trim();
+                if (!customTime) {
+                    alert('Please enter your custom time');
+                    return;
+                }
+            } else if (timeSlot === '12:00 PM - 5:00 PM' || timeSlot === '7:00 PM - 12:00 AM') {
+                const arrivalTime = document.getElementById('arrivalTime').value.trim();
+                if (!arrivalTime) {
+                    alert('Please specify your arrival time');
+                    return;
+                }
+            }
+            
+            // Validate birthday age if selected
+            const occasion = document.getElementById('occasion').value;
+            if (occasion === 'Birthday') {
+                const age = parseInt(document.getElementById('birthdayAge').value);
+                if (isNaN(age) || age < 22) {
+                    alert('We do not host birthday parties for ages under 22. Please select a different occasion.');
+                    return;
+                }
+            }
+            
+            // Validate other occasion field if selected
+            if (occasion === 'Other' && !document.getElementById('otherOccasion').value.trim()) {
+                alert('Please specify your occasion');
+                return;
+            }
+
+            // Collect form data
+            const formData = {
+                date: document.getElementById('bookingDate').value,
+                time: timeSlot === 'custom' ? document.getElementById('customTime').value : timeSlot,
+                arrivalTime: document.getElementById('arrivalTime')?.value || '',
+                numberOfPeople: document.getElementById('numberOfPeople').value,
+                contactName: document.getElementById('contactName').value,
+                contactNumber: document.getElementById('contactNumber').value,
+                contactEmail: document.getElementById('contactEmail').value,
+                occasion: occasion,
+                birthdayAge: document.getElementById('birthdayAge')?.value || '',
+                otherOccasion: document.getElementById('otherOccasion')?.value || '',
+                specialRequests: document.getElementById('specialRequests').value
+            };
+
+            // Prepare email content
+            const subject = `New Booking Request - ${formData.contactName}`;
+            let body = `
+                <h2>New Booking Request</h2>
+                <table style="border-collapse: collapse; width: 100%;">
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Booking Date</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.date}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Booking Time</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.time}</td>
+                    </tr>
+                    ${formData.arrivalTime ? `
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Arrival Time</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.arrivalTime}</td>
+                    </tr>
+                    ` : ''}
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Number of People</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.numberOfPeople}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Contact Name</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.contactName}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Contact Number</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.contactNumber}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Email</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.contactEmail}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Occasion</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.occasion}</td>
+                    </tr>
+                    ${formData.birthdayAge ? `
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Birthday Age</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.birthdayAge}</td>
+                    </tr>
+                    ` : ''}
+                    ${formData.otherOccasion ? `
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Other Occasion</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.otherOccasion}</td>
+                    </tr>
+                    ` : ''}
+                    ${formData.specialRequests ? `
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Special Requests</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">${formData.specialRequests}</td>
+                    </tr>
+                    ` : ''}
+                </table>
+            `;
+
+            // Send email using FormSubmit.co
+            fetch('https://formsubmit.co/ajax/info.sheffieldtrades@gmail.com', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: subject,
+                    _replyto: formData.contactEmail,
+                    message: body,
+                    _template: 'table'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Thank you for your booking request! We will contact you shortly to confirm.');
+                this.reset();
+                document.getElementById('birthdayAgeField').classList.add('hidden');
+                document.getElementById('otherOccasionField').classList.add('hidden');
+                document.getElementById('customTimeField').classList.add('hidden');
+                document.getElementById('arrivalTimeField').classList.add('hidden');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error submitting your booking. Please try again or contact us directly.');
+            });
+        });
+    </script>
+</body>
+</html>

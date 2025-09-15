@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sheffield Trades & Labour Club | Community Pub & Events</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('http://static.photos/people/1200x630/42');
+            background-size: cover;
+            background-position: center;
+        }
+        .special-card {
+            transition: all 0.3s ease;
+        }
+        .special-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-red-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i data-feather="flag" class="text-yellow-400"></i>
+                    <span class="font-bold text-xl font-serif">Sheffield Trades & Labour Club</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#" class="hover:text-yellow-300 transition">Home</a>
+                    <a href="#contact" class="hover:text-yellow-300 transition">Contact</a>
+                    <a href="booking.html" class="hover:text-yellow-300 transition">Make a Booking</a>
+                </div>
+                <button class="md:hidden focus:outline-none" id="menu-toggle">
+                    <i data-feather="menu"></i>
+                </button>
+            </div>
+            <!-- Mobile menu -->
+            <div class="md:hidden hidden pt-4" id="mobile-menu">
+                <a href="#" class="block py-2 hover:text-yellow-300 transition">Home</a>
+                <a href="#contact" class="block py-2 hover:text-yellow-300 transition">Contact</a>
+                <a href="booking.html" class="block py-2 hover:text-yellow-300 transition">Make a Booking</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero text-white py-20">
+        <div class="container mx-auto px-4 text-center" data-aos="fade-up">
+            <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6">Welcome to Sheffield Trades & Labour Club</h1>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">A community hub for good drinks, great company, and unbeatable deals in the heart of Sheffield</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#specials" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-lg transition duration-300">View Our Specials</a>
+                <a href="#contact" class="bg-transparent hover:bg-white hover:text-gray-900 border-2 border-white text-white font-bold py-3 px-6 rounded-lg transition duration-300">Contact Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Daily Specials -->
+    <section id="specials" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-serif font-bold text-center mb-12 text-gray-800" data-aos="fade-up">Our Specials (Members Only)</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Monday Club -->
+                <div class="special-card bg-red-50 rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-red-700 text-white p-4">
+                        <h3 class="text-xl font-bold">Monday Club</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i data-feather="clock" class="mr-2 text-red-600"></i>
+                            <span>12pm - 5pm</span>
+                        </div>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>Select lagers £2.50</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>Select beers £1.99</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>Ciders £2.95</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Cheap Tuesday -->
+                <div class="special-card bg-blue-50 rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-blue-700 text-white p-4">
+                        <h3 class="text-xl font-bold">Cheap Tuesday</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i data-feather="clock" class="mr-2 text-blue-600"></i>
+                            <span>All Day</span>
+                        </div>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>All pints on draught £2.95</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Happy Hour -->
+                <div class="special-card bg-green-50 rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="300">
+                    <div class="bg-green-700 text-white p-4">
+                        <h3 class="text-xl font-bold">Daily Happy Hour</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i data-feather="clock" class="mr-2 text-green-600"></i>
+                            <span>2pm - 3pm</span>
+                        </div>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>All pints on draught £2.95</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Wednesday Special -->
+                <div class="special-card bg-purple-50 rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="400">
+                    <div class="bg-purple-700 text-white p-4">
+                        <h3 class="text-xl font-bold">Wednesday Ladies Section</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i data-feather="clock" class="mr-2 text-purple-600"></i>
+                            <span>7pm - 12am</span>
+                        </div>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>Bingo Night</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Saturday Special -->
+                <div class="special-card bg-yellow-50 rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="500">
+                    <div class="bg-yellow-700 text-white p-4">
+                        <h3 class="text-xl font-bold">Saturday Night</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i data-feather="clock" class="mr-2 text-yellow-600"></i>
+                            <span>7pm - 12am</span>
+                        </div>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>Turn singer & bingo</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>25% off everything in concert room</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Sunday Special -->
+                <div class="special-card bg-indigo-50 rounded-lg overflow-hidden shadow-md" data-aos="fade-up" data-aos-delay="600">
+                    <div class="bg-indigo-700 text-white p-4">
+                        <h3 class="text-xl font-bold">Sunday Night</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i data-feather="clock" class="mr-2 text-indigo-600"></i>
+                            <span>7pm - 12am</span>
+                        </div>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>Karaoke Night</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>Musical Bingo</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i data-feather="check-circle" class="mr-2 text-green-500 mt-1"></i>
+                                <span>Regular Bingo</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-serif font-bold text-center mb-12 text-gray-800" data-aos="fade-up">Upcoming Events</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- £10 Bingo Night -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg" data-aos="fade-up">
+                    <img src="http://static.photos/people/640x360/40" alt="Bingo Night" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">£10 Bingo Night</h3>
+                        <p class="text-gray-600 mb-4">Last Monday of every month at 7pm</p>
+                        <p class="text-gray-700">Join us for our special monthly bingo night with great prizes. Only £10 entry.</p>
+                    </div>
+                </div>
+
+                <!-- Kids Karate Club -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <img src="http://static.photos/sport/640x360/50" alt="Kids Karate" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Kids Karate Club</h3>
+                        <p class="text-gray-600 mb-4">Every Monday & Friday 6pm-8pm</p>
+                        <p class="text-gray-700">Fun and engaging karate classes for kids aged 5-12. Pay As You Go from just £5 per session.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-serif font-bold text-center mb-12 text-gray-800" data-aos="fade-up">Find Us</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div data-aos="fade-right">
+                    <h3 class="text-xl font-bold mb-4">Contact Information</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i data-feather="map-pin" class="mr-3 text-red-700 mt-1"></i>
+                            <span>200 Duke Street, Sheffield, S2 5QQ</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-feather="phone" class="mr-3 text-red-700 mt-1"></i>
+                            <span>0114 123 4567</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-feather="mail" class="mr-3 text-red-700 mt-1"></i>
+                            <span>info@sheffieldtradesclub.co.uk</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i data-feather="clock" class="mr-3 text-red-700 mt-1"></i>
+                            <span>Mon, Wed, Fri, Sat, Sun: 12pm-5pm & 7pm-12am<br>Tues & Thu: 7pm-11:30pm</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div data-aos="fade-left">
+                    <div class="bg-gray-200 h-64 rounded-lg overflow-hidden">
+                        <!-- Map placeholder -->
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2379.123456789012!2d-1.4691234!3d53.3791234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48798283a6c6f8a5%3A0x3b8f0e4b4b4b4b4b!2s200+Duke+St%2C+Sheffield+S2+5QQ!5e0!3m2!1sen!2suk!4v1234567890123!5m2!1sen!2suk" 
+                                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <i data-feather="flag" class="text-yellow-400"></i>
+                        <span class="font-bold text-xl font-serif">Sheffield Trades & Labour Club</span>
+                    </div>
+                    <p class="mt-2 text-gray-400">Est. 1981</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="https://www.facebook.com/people/Sheffield-Trades-Labour-Club/100063482235781/" target="_blank" class="hover:text-yellow-300 transition">
+                        <i data-feather="facebook"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@SunNightSheffTradesLabour" target="_blank" class="hover:text-yellow-300 transition">
+                        <i data-feather="youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400">
+                <p>&copy; 2023 Sheffield Trades & Labour Club. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out'
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Initialize feather icons
+        feather.replace();
+    </script>
+</body>
+</html>
