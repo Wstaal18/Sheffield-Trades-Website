@@ -50,7 +50,7 @@
             <div class="booking-form mx-auto bg-white p-8 rounded-lg shadow-lg">
                 <h1 class="text-3xl font-serif font-bold text-center mb-8 text-gray-800">Make a Booking</h1>
                 
-                <form name="booking" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action="/booking-success.html" class="space-y-6">
+                <form name="booking" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" class="space-y-6">
                     <!-- Hidden honeypot field for spam protection -->
                     <div style="display: none;">
                         <label>Don't fill this out if you're human: <input name="bot-field"></label>
@@ -262,7 +262,7 @@
                 const [y, m, d] = iso.split('-');
                 return `${d}/${m}/${y}`;
             };
-        // Form validation before submission
+        // Form validation and submission handling
         document.querySelector('form[name="booking"]').addEventListener('submit', function(e) {
             // Validate number of people
             const numberOfPeople = parseInt(document.getElementById('numberOfPeople').value);
@@ -307,6 +307,38 @@
                 alert('Please specify your occasion');
                 return;
             }
+
+            // If validation passes, show success message
+            setTimeout(() => {
+                // Hide the form
+                document.querySelector('.booking-form').innerHTML = `
+                    <div class="text-center">
+                        <div class="mb-6">
+                            <i data-feather="check-circle" class="w-16 h-16 text-green-500 mx-auto"></i>
+                        </div>
+                        <h1 class="text-3xl font-serif font-bold mb-4 text-gray-800">Booking Request Submitted!</h1>
+                        <p class="text-lg text-gray-600 mb-6">
+                            Thank you for your booking request. We have received your details and will contact you shortly to confirm your booking.
+                        </p>
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                            <p class="text-sm text-green-800">
+                                <strong>What happens next?</strong><br>
+                                We will review your booking request and contact you within 24 hours to confirm availability and finalize the details.
+                            </p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a href="index.html" class="bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                                Return to Home
+                            </a>
+                            <a href="booking.html" class="bg-transparent hover:bg-gray-100 border-2 border-red-700 text-red-700 font-bold py-3 px-6 rounded-lg transition duration-300">
+                                Make Another Booking
+                            </a>
+                        </div>
+                    </div>
+                `;
+                // Re-initialize feather icons
+                feather.replace();
+            }, 1000);
         });
 </script>
 </body>
