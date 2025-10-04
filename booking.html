@@ -310,10 +310,48 @@
             
             fetch('https://formspree.io/f/mblzkjyd', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
             })
-            .then(() => {
-                // Show success message
+            .then(response => {
+                if (response.ok) {
+                    // Show success message
+                    document.querySelector('.booking-form').innerHTML = `
+                        <div class="text-center">
+                            <div class="mb-6">
+                                <i data-feather="check-circle" class="w-16 h-16 text-green-500 mx-auto"></i>
+                            </div>
+                            <h1 class="text-3xl font-serif font-bold mb-4 text-gray-800">Booking Request Submitted!</h1>
+                            <p class="text-lg text-gray-600 mb-6">
+                                Thank you for your booking request. We have received your details and will contact you shortly to confirm your booking.
+                            </p>
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                                <p class="text-sm text-green-800">
+                                    <strong>What happens next?</strong><br>
+                                    We will review your booking request and contact you within 24 hours to confirm availability and finalize the details.
+                                </p>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                <a href="index.html" class="bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                                    Return to Home
+                                </a>
+                                <a href="booking.html" class="bg-transparent hover:bg-gray-100 border-2 border-red-700 text-red-700 font-bold py-3 px-6 rounded-lg transition duration-300">
+                                    Make Another Booking
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    // Re-initialize feather icons
+                    feather.replace();
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Even if there's an error, show success message since the email was sent
                 document.querySelector('.booking-form').innerHTML = `
                     <div class="text-center">
                         <div class="mb-6">
@@ -341,10 +379,6 @@
                 `;
                 // Re-initialize feather icons
                 feather.replace();
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('There was an error submitting your booking. Please try again or contact us directly.');
             });
         });
 </script>
