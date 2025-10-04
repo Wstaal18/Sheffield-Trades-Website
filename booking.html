@@ -50,7 +50,7 @@
             <div class="booking-form mx-auto bg-white p-8 rounded-lg shadow-lg">
                 <h1 class="text-3xl font-serif font-bold text-center mb-8 text-gray-800">Make a Booking</h1>
                 
-                <form name="booking" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" class="space-y-6">
+                <form name="booking" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" netlify class="space-y-6">
                     <!-- Hidden honeypot field for spam protection -->
                     <div style="display: none;">
                         <label>Don't fill this out if you're human: <input name="bot-field"></label>
@@ -264,10 +264,11 @@
             };
         // Form validation and submission handling
         document.querySelector('form[name="booking"]').addEventListener('submit', function(e) {
+            e.preventDefault(); // Always prevent default submission
+            
             // Validate number of people
             const numberOfPeople = parseInt(document.getElementById('numberOfPeople').value);
             if (numberOfPeople > 120) {
-                e.preventDefault();
                 alert('Maximum booking size is 120 people. Please adjust your booking.');
                 return;
             }
@@ -277,14 +278,12 @@
             if (timeSlot === 'custom') {
                 const customTime = document.getElementById('customTime').value.trim();
                 if (!customTime) {
-                    e.preventDefault();
                     alert('Please enter your custom time');
                     return;
                 }
             } else if (timeSlot === '12:00 PM - 5:00 PM' || timeSlot === '7:00 PM - 12:00 AM') {
                 const arrivalTime = document.getElementById('arrivalTime').value.trim();
                 if (!arrivalTime) {
-                    e.preventDefault();
                     alert('Please specify your arrival time');
                     return;
                 }
@@ -295,7 +294,6 @@
             if (occasion === 'Birthday') {
                 const age = parseInt(document.getElementById('birthdayAge').value);
                 if (isNaN(age) || age < 22) {
-                    e.preventDefault();
                     alert('We do not host birthday parties for ages under 22. Please select a different occasion.');
                     return;
                 }
@@ -303,14 +301,20 @@
             
             // Validate other occasion field if selected
             if (occasion === 'Other' && !document.getElementById('otherOccasion').value.trim()) {
-                e.preventDefault();
                 alert('Please specify your occasion');
                 return;
             }
 
-            // If validation passes, show success message
-            setTimeout(() => {
-                // Hide the form
+            // If validation passes, submit to Netlify and show success message
+            const formData = new FormData(this);
+            
+            fetch('/', {
+                method: 'POST',
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString()
+            })
+            .then(() => {
+                // Show success message
                 document.querySelector('.booking-form').innerHTML = `
                     <div class="text-center">
                         <div class="mb-6">
@@ -338,7 +342,11 @@
                 `;
                 // Re-initialize feather icons
                 feather.replace();
-            }, 1000);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('There was an error submitting your booking. Please try again or contact us directly.');
+            });
         });
 </script>
 </body>
