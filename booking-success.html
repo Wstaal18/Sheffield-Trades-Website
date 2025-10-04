@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Submitted | Sheffield Trades & Labour Club</title>
+    <link rel="icon" type="image/png" href="images/SheffieldTrades_logo.png">
+    <link rel="apple-touch-icon" href="images/SheffieldTrades_logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-red-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <img src="images/SheffieldTrades_logo.png" alt="Sheffield Trades & Labour Club Logo" class="h-8 w-8">
+                    <span class="font-bold text-xl font-serif">Sheffield Trades & Labour Club</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
+                    <a href="index.html#contact" class="hover:text-yellow-300 transition">Contact</a>
+                    <a href="booking.html" class="hover:text-yellow-300 transition">Make a Booking</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Success Message -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg text-center">
+                <div class="mb-6">
+                    <i data-feather="check-circle" class="w-16 h-16 text-green-500 mx-auto"></i>
+                </div>
+                <h1 class="text-3xl font-serif font-bold mb-4 text-gray-800">Booking Request Submitted!</h1>
+                <p class="text-lg text-gray-600 mb-6">
+                    Thank you for your booking request. We have received your details and will contact you shortly to confirm your booking.
+                </p>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                    <p class="text-sm text-green-800">
+                        <strong>What happens next?</strong><br>
+                        We will review your booking request and contact you within 24 hours to confirm availability and finalize the details.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="index.html" class="bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                        Return to Home
+                    </a>
+                    <a href="booking.html" class="bg-transparent hover:bg-gray-100 border-2 border-red-700 text-red-700 font-bold py-3 px-6 rounded-lg transition duration-300">
+                        Make Another Booking
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Info -->
+    <section class="py-8 bg-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">Need to Contact Us?</h2>
+            <div class="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-8">
+                <div class="flex items-center">
+                    <i data-feather="phone" class="mr-2 text-red-700"></i>
+                    <span>0114 275 4671</span>
+                </div>
+                <div class="flex items-center">
+                    <i data-feather="mail" class="mr-2 text-red-700"></i>
+                    <span>info.sheffieldtrades@gmail.com</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <img src="images/SheffieldTrades_logo.png" alt="Sheffield Trades & Labour Club Logo" class="h-8 w-8">
+                        <span class="font-bold text-xl font-serif">Sheffield Trades & Labour Club</span>
+                    </div>
+                    <p class="mt-2 text-gray-400">Est. 1981</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="https://www.facebook.com/people/Sheffield-Trades-Labour-Club/100063482235781/" target="_blank" class="hover:text-yellow-300 transition">
+                        <i data-feather="facebook"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@SunNightSheffTradesLabour" target="_blank" class="hover:text-yellow-300 transition">
+                        <i data-feather="youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400">
+                <p>&copy; 2023 Sheffield Trades & Labour Club. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize feather icons
+        feather.replace();
+    </script>
+</body>
+</html>
