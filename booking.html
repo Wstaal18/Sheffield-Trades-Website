@@ -50,7 +50,7 @@
             <div class="booking-form mx-auto bg-white p-8 rounded-lg shadow-lg">
                 <h1 class="text-3xl font-serif font-bold text-center mb-8 text-gray-800">Make a Booking</h1>
                 
-                <form id="bookingForm" class="space-y-6">
+                <form name="booking" method="POST" data-netlify="true" class="space-y-6">
                     <div>
                         <label for="bookingDate" class="block text-gray-700 font-medium mb-2">Booking Date*</label>
                         <input type="date" id="bookingDate" name="bookingDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
@@ -258,13 +258,12 @@
                 const [y, m, d] = iso.split('-');
                 return `${d}/${m}/${y}`;
             };
-        // Form submission
-        document.getElementById('bookingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
+        // Form validation before submission
+        document.querySelector('form[name="booking"]').addEventListener('submit', function(e) {
             // Validate number of people
             const numberOfPeople = parseInt(document.getElementById('numberOfPeople').value);
             if (numberOfPeople > 120) {
+                e.preventDefault();
                 alert('Maximum booking size is 120 people. Please adjust your booking.');
                 return;
             }
@@ -274,12 +273,14 @@
             if (timeSlot === 'custom') {
                 const customTime = document.getElementById('customTime').value.trim();
                 if (!customTime) {
+                    e.preventDefault();
                     alert('Please enter your custom time');
                     return;
                 }
             } else if (timeSlot === '12:00 PM - 5:00 PM' || timeSlot === '7:00 PM - 12:00 AM') {
                 const arrivalTime = document.getElementById('arrivalTime').value.trim();
                 if (!arrivalTime) {
+                    e.preventDefault();
                     alert('Please specify your arrival time');
                     return;
                 }
@@ -290,6 +291,7 @@
             if (occasion === 'Birthday') {
                 const age = parseInt(document.getElementById('birthdayAge').value);
                 if (isNaN(age) || age < 22) {
+                    e.preventDefault();
                     alert('We do not host birthday parties for ages under 22. Please select a different occasion.');
                     return;
                 }
@@ -297,69 +299,11 @@
             
             // Validate other occasion field if selected
             if (occasion === 'Other' && !document.getElementById('otherOccasion').value.trim()) {
+                e.preventDefault();
                 alert('Please specify your occasion');
                 return;
             }
-               // Collect form data
-            
-            const formData = {
-                date: document.getElementById('bookingDate').value,
-                time: timeSlot === 'custom' ? document.getElementById('customTime').value : timeSlot,
-                arrivalTime: document.getElementById('arrivalTime')?.value || '',
-                numberOfPeople: document.getElementById('numberOfPeople').value,
-                contactName: document.getElementById('contactName').value,
-                contactNumber: document.getElementById('contactNumber').value,
-                contactEmail: document.getElementById('contactEmail').value,
-                occasion: document.getElementById('occasion').value,
-                birthdayAge: document.getElementById('birthdayAge')?.value || '',
-                otherOccasion: document.getElementById('otherOccasion')?.value || '',
-                specialRequests: document.getElementById('specialRequests').value
-            };
-          
-
-            // Prepare email content
-            // Build FormData with nice labels (what appears in the email)
-        const fd = new FormData();
-        const subject = `New Booking Request - ${formData.contactName}`;
-        fd.append('_subject', subject);
-        fd.append('_replyto', formData.contactEmail);
-        fd.append('_template', 'table'); // or 'box' if you prefer
-        fd.append('_captcha', 'true');   // change to 'false' if you disable captcha
-        fd.append('_honey', '');         // honeypot (bots fill it)
-
-        // Your preferred field labels:
-        fd.append('Name', formData.contactName);
-        fd.append('Email', formData.contactEmail);
-        fd.append('Phone', formData.contactNumber);
-        fd.append('Party Size', formData.numberOfPeople);
-        fd.append('Date for Booking', toUKDate(formData.date));
-        fd.append('Time', formData.time);
-        if (formData.arrivalTime) fd.append('Arrival Time', formData.arrivalTime);
-        fd.append('Occasion', formData.occasion);
-        if (formData.birthdayAge) fd.append('Birthday Age', formData.birthdayAge);
-        if (formData.otherOccasion) fd.append('Other Occasion', formData.otherOccasion);
-        if (formData.specialRequests) fd.append('Special Requests', formData.specialRequests);
-
-        // Optional: redirect after submission
-        // fd.append('_next', 'https://yourdomain.com/thank-you.html');
-
-        fetch('https://formsubmit.co/info.sheffieldtrades@gmail.com', {
-        method: 'POST',
-        body: fd
-        })
-        .then(() => {
-        alert('Thank you for your booking request! We will contact you shortly to confirm.');
-        e.target.reset();
-        document.getElementById('birthdayAgeField').classList.add('hidden');
-        document.getElementById('otherOccasionField').classList.add('hidden');
-        document.getElementById('customTimeField').classList.add('hidden');
-        document.getElementById('arrivalTimeField').classList.add('hidden');
-        })
-        .catch((error) => {
-        console.error('Error:', error);
-        alert('There was an error submitting your booking. Please try again or contact us directly.');
         });
-    });
 </script>
 </body>
 </html>
