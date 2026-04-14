@@ -1,4 +1,4 @@
-2<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,13 +23,13 @@
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <i data-feather="flag" class="text-yellow-400"></i>
+                    <img src="images/SheffieldTrades_logo.png" alt="Sheffield Trades & Labour Club Logo" class="h-8 w-8">
                     <span class="font-bold text-xl font-serif">Sheffield Trades & Labour Club</span>
                 </div>
                 <div class="hidden md:flex space-x-6">
-                    <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
-                    <a href="index.html#contact" class="hover:text-yellow-300 transition">Contact</a>
-                    <a href="booking.html" class="hover:text-yellow-300 transition">Make a Booking</a>
+                    <a href="index.html" class="hover:text-yellow-400 transition">Home</a>
+                    <a href="index.html#contact" class="hover:text-yellow-400 transition">Contact</a>
+                    <a href="booking.html" class="text-yellow-300 hover:text-yellow-400 transition">Make a Booking</a>
                 </div>
                 <button class="md:hidden focus:outline-none" id="menu-toggle">
                     <i data-feather="menu"></i>
@@ -37,9 +37,9 @@
             </div>
             <!-- Mobile menu -->
             <div class="md:hidden hidden pt-4" id="mobile-menu">
-                <a href="index.html" class="block py-2 hover:text-yellow-300 transition">Home</a>
-                <a href="index.html#contact" class="block py-2 hover:text-yellow-300 transition">Contact</a>
-                <a href="booking.html" class="block py-2 hover:text-yellow-300 transition">Make a Booking</a>
+                <a href="index.html" class="block py-2 hover:text-yellow-400 transition">Home</a>
+                <a href="index.html#contact" class="block py-2 hover:text-yellow-400 transition">Contact</a>
+                <a href="booking.html" class="block py-2 text-yellow-300 hover:text-yellow-400 transition">Make a Booking</a>
             </div>
         </div>
     </nav>
@@ -57,13 +57,13 @@
                     </div>
                     <div>
                         <label for="bookingDate" class="block text-gray-700 font-medium mb-2">Booking Date*</label>
-                        <input type="date" id="bookingDate" name="bookingDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        <input type="date" id="bookingDate" name="📅 Booking Date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
                         <p class="text-sm text-gray-500 mt-1">Bookings available for Thursdays and Fridays only</p>
                     </div>
 
                     <div>
                         <label for="bookingTime" class="block text-gray-700 font-medium mb-2">Booking Time*</label>
-                        <select id="bookingTime" name="bookingTime" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        <select id="bookingTime" name="🕐 Booking Time" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
                             <option value="">Select a time slot</option>
                             <option value="12:00 PM - 5:00 PM">12:00 PM - 5:00 PM</option>
                             <option value="7:00 PM - 12:00 AM">7:00 PM - 12:00 AM</option>
@@ -73,38 +73,38 @@
 
                     <div id="customTimeField" class="hidden">
                         <label for="customTime" class="block text-gray-700 font-medium mb-2">Enter Custom Time*</label>
-                        <input type="text" id="customTime" name="customTime" placeholder="e.g. 10:00 AM - 8:00 PM" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
+                        <input type="text" id="customTime" name="🕐 Custom Time" placeholder="e.g. 10:00 AM - 8:00 PM" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
                     </div>
 
                     <div id="arrivalTimeField" class="hidden">
                         <label for="arrivalTime" class="block text-gray-700 font-medium mb-2">When are you due to arrive?*</label>
-                        <input type="text" id="arrivalTime" name="arrivalTime" placeholder="e.g. 3:00 PM" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
+                        <input type="text" id="arrivalTime" name="⏰ Arrival Time" placeholder="e.g. 3:00 PM" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
                     </div>
 
                     <div>
                         <label for="numberOfPeople" class="block text-gray-700 font-medium mb-2">Number of People*</label>
-                        <input type="number" id="numberOfPeople" name="numberOfPeople" min="1" max="120" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        <input type="number" id="numberOfPeople" name="👥 Party Size" min="1" max="120" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
                         <p class="text-sm text-gray-500 mt-1">Maximum of 120 people per booking</p>
                     </div>
 
                     <div>
                         <label for="contactName" class="block text-gray-700 font-medium mb-2">Contact Name*</label>
-                        <input type="text" id="contactName" name="contactName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        <input type="text" id="contactName" name="👤 Contact Name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
                     </div>
 
                     <div>
                         <label for="contactNumber" class="block text-gray-700 font-medium mb-2">Contact Number*</label>
-                        <input type="tel" id="contactNumber" name="contactNumber" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        <input type="tel" id="contactNumber" name="📞 Phone Number" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
                     </div>
 
                     <div>
                         <label for="contactEmail" class="block text-gray-700 font-medium mb-2">Email Address*</label>
-                        <input type="email" id="contactEmail" name="contactEmail" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        <input type="email" id="contactEmail" name="📧 Email Address" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
                     </div>
 
                     <div>
                         <label for="occasion" class="block text-gray-700 font-medium mb-2">Occasion*</label>
-                        <select id="occasion" name="occasion" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        <select id="occasion" name="🎉 Occasion" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600" required>
                             <option value="">Select an occasion</option>
                             <option value="Anniversary">Anniversary</option>
                             <option value="Wake">Wake</option>
@@ -116,18 +116,18 @@
 
                     <div id="birthdayAgeField" class="hidden">
                         <label for="birthdayAge" class="block text-gray-700 font-medium mb-2">Birthday Age*</label>
-                        <input type="number" id="birthdayAge" name="birthdayAge" min="22" max="99" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
-                        <p class="text-sm text-gray-500 mt-1">We do not host 21st birthday parties</p>
+                        <input type="number" id="birthdayAge" name="🎂 Birthday Age" min="22" max="99" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
+                        <p class="text-sm text-gray-500 mt-1">We do not host birthday parties before 22nd Birthdays</p>
                     </div>
 
                     <div id="otherOccasionField" class="hidden">
                         <label for="otherOccasion" class="block text-gray-700 font-medium mb-2">Please specify occasion*</label>
-                        <input type="text" id="otherOccasion" name="otherOccasion" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
+                        <input type="text" id="otherOccasion" name="📝 Other Occasion Details" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600">
                     </div>
 
                     <div>
                         <label for="specialRequests" class="block text-gray-700 font-medium mb-2">Special Requests</label>
-                        <textarea id="specialRequests" name="specialRequests" rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"></textarea>
+                        <textarea id="specialRequests" name="📝 Special Requests" rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"></textarea>
                     </div>
 
                     <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
@@ -153,11 +153,11 @@
                         </div>
                         <div class="flex items-start">
                             <i data-feather="phone" class="mr-3 text-red-700 mt-1"></i>
-                            <span>0114 275 4671</span>
+                            <button onclick="this.textContent='0114 275 4671';this.classList.remove('bg-red-700','hover:bg-red-800','text-white','px-3','py-1','rounded','text-sm');this.disabled=true;" class="bg-red-700 hover:bg-red-800 text-white px-3 py-1 rounded text-sm transition">Click to reveal phone</button>
                         </div>
                         <div class="flex items-start">
                             <i data-feather="mail" class="mr-3 text-red-700 mt-1"></i>
-                            <span>info.sheffieldtrades@gmail.com</span>
+                            <button onclick="this.textContent='info.sheffieldtrades@gmail.com';this.classList.remove('bg-red-700','hover:bg-red-800','text-white','px-3','py-1','rounded','text-sm');this.disabled=true;" class="bg-red-700 hover:bg-red-800 text-white px-3 py-1 rounded text-sm transition">Click to reveal email</button>
                         </div>
                         <div class="flex items-start">
                             <i data-feather="clock" class="mr-3 text-red-700 mt-1"></i>
@@ -182,22 +182,22 @@
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
                     <div class="flex items-center space-x-2">
-                        <i data-feather="flag" class="text-yellow-400"></i>
+                        <img src="images/SheffieldTrades_logo.png" alt="Sheffield Trades & Labour Club Logo" class="h-8 w-8">
                         <span class="font-bold text-xl font-serif">Sheffield Trades & Labour Club</span>
                     </div>
                     <p class="mt-2 text-gray-400">Est. 1981</p>
                 </div>
                 <div class="flex space-x-6">
-                    <a href="https://www.facebook.com/people/Sheffield-Trades-Labour-Club/100063482235781/" target="_blank" class="hover:text-yellow-300 transition">
+                    <a href="https://www.facebook.com/people/Sheffield-Trades-Labour-Club/100063482235781/" target="_blank" class="hover:text-yellow-400 transition">
                         <i data-feather="facebook"></i>
                     </a>
-                    <a href="https://www.youtube.com/@SunNightSheffTradesLabour" target="_blank" class="hover:text-yellow-300 transition">
+                    <a href="https://www.youtube.com/@SunNightSheffTradesLabour" target="_blank" class="hover:text-yellow-400 transition">
                         <i data-feather="youtube"></i>
                     </a>
                 </div>
             </div>
             <div class="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400">
-                <p>&copy; 2023 Sheffield Trades & Labour Club. All rights reserved.</p>
+                <p>&copy; 2026 Sheffield Trades & Labour Club. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -294,7 +294,7 @@
             if (occasion === 'Birthday') {
                 const age = parseInt(document.getElementById('birthdayAge').value);
                 if (isNaN(age) || age < 22) {
-                    alert('We do not host birthday parties for ages under 22. Please select a different occasion.');
+                    alert('We do not host birthday parties before 22nd Birthdays. Please select a different occasion.');
                     return;
                 }
             }
