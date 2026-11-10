@@ -1,0 +1,296 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { club } from '../data/club';
+
+const FORMSPREE = 'https://formspree.io/f/mblzkjyd';
+
+const steps = [
+  { title: 'Send your request', text: 'Tell us the date, numbers and occasion using the form below.' },
+  { title: 'We review it', text: 'The club checks availability and gets back to you by phone or email.' },
+  { title: 'Booking confirmed', text: 'Your booking is only confirmed once we’ve spoken and agreed the details.' },
+];
+---
+<Layout
+  title="Request a Booking"
+  description="Request the function room at Sheffield Trades & Labour Club for birthdays, anniversaries, retirements and wakes. Up to 120 guests, Thursdays and Fridays."
+>
+  <PageHero
+    eyebrow="Room hire"
+    title="Request a booking"
+    intro="Birthdays, anniversaries, retirement do's and wakes for up to 120 guests on Thursdays and Fridays."
+  />
+
+  <!-- How it works -->
+  <section class="border-b border-soot/10 bg-parchment-dark">
+    <div class="container-site py-10">
+      <h2 class="sr-only">How booking works</h2>
+      <ol class="grid gap-6 md:grid-cols-3">
+        {steps.map((s, i) => (
+          <li class="flex gap-4">
+            <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-banner-700 font-display text-lg text-parchment">{i + 1}</span>
+            <div>
+              <p class="font-display text-lg tracking-wide uppercase">{s.title}</p>
+              <p class="text-sm text-soot/75">{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="container-site grid gap-10 py-14 lg:grid-cols-[1fr_20rem]">
+    <div>
+      <div role="note" class="mb-8 flex gap-3 border-l-4 border-brass-500 bg-brass-200/50 p-4">
+        <Icon name="info" class="mt-0.5 shrink-0 text-brass-600" />
+        <p class="text-sm leading-relaxed">
+          <strong>This form sends a booking request. It does not confirm a booking.</strong>
+          Your date isn't reserved until a member of the club team has contacted you and confirmed it.
+        </p>
+      </div>
+
+      <form id="booking-form" action={FORMSPREE} method="POST" novalidate class="framed space-y-6 p-5 sm:p-8">
+        <input type="hidden" name="_subject" value="New booking REQUEST: please review & reply" />
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+        <fieldset class="space-y-5">
+          <legend class="mb-4 font-display text-2xl uppercase">Your event</legend>
+
+          <div>
+            <label for="date" class="field-label">Preferred date *</label>
+            <input id="date" name="📅 Requested Date" type="date" required class="field" aria-describedby="date-hint date-error" />
+            <p id="date-hint" class="field-hint">Thursdays and Fridays only.</p>
+            <p id="date-error" class="field-error hidden" aria-live="polite"></p>
+          </div>
+
+          <div>
+            <label for="time" class="field-label">Time *</label>
+            <select id="time" name="🕐 Requested Time" required class="field" aria-describedby="time-error">
+              <option value="">Select a time</option>
+              <option value="12:00pm – 5:00pm">Afternoon: 12pm – 5pm</option>
+              <option value="7:00pm – midnight">Evening: 7pm – midnight</option>
+              <option value="custom">All day / other time</option>
+            </select>
+            <p id="time-error" class="field-error hidden" aria-live="polite"></p>
+          </div>
+
+          <div id="custom-time-wrap" class="hidden"><div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="custom-time" class="field-label">Times you'd like *</label>
+              <input id="custom-time" name="🕐 Custom Time" type="text" placeholder="e.g. 2pm – 10pm" class="field" />
+            </div>
+            <div>
+              <label for="arrival" class="field-label">When will you arrive? *</label>
+              <input id="arrival" name="⏰ Arrival Time" type="text" placeholder="e.g. 1:30pm" class="field" />
+            </div>
+          </div></div>
+
+          <div>
+            <label for="guests" class="field-label">Number of guests *</label>
+            <input id="guests" name="👥 Guests" type="number" inputmode="numeric" min="1" max="120" required class="field max-w-40" aria-describedby="guests-hint guests-error" />
+            <p id="guests-hint" class="field-hint">Up to 120 people.</p>
+            <p id="guests-error" class="field-error hidden" aria-live="polite"></p>
+          </div>
+
+          <div>
+            <label for="occasion" class="field-label">Occasion *</label>
+            <select id="occasion" name="🎉 Occasion" required class="field" aria-describedby="occasion-error">
+              <option value="">Select an occasion</option>
+              <option>Birthday</option>
+              <option>Anniversary</option>
+              <option>Retirement party</option>
+              <option>Wake</option>
+              <option value="Other">Other</option>
+            </select>
+            <p id="occasion-error" class="field-error hidden" aria-live="polite"></p>
+          </div>
+
+          <div id="age-wrap" class="hidden">
+            <label for="age" class="field-label">Which birthday? *</label>
+            <input id="age" name="🎂 Birthday Age" type="number" inputmode="numeric" min="22" max="120" class="field max-w-40" aria-describedby="age-hint age-error" />
+            <p id="age-hint" class="field-hint">We don't host birthday parties before 22nd birthdays.</p>
+            <p id="age-error" class="field-error hidden" aria-live="polite"></p>
+          </div>
+
+          <div id="other-wrap" class="hidden">
+            <label for="other" class="field-label">Tell us about the occasion *</label>
+            <input id="other" name="📝 Other Occasion" type="text" class="field" />
+          </div>
+        </fieldset>
+
+        <fieldset class="space-y-5 border-t border-soot/10 pt-6">
+          <legend class="mb-4 font-display text-2xl uppercase">Your details</legend>
+          <div>
+            <label for="name" class="field-label">Your name *</label>
+            <input id="name" name="👤 Name" type="text" autocomplete="name" required class="field" aria-describedby="name-error" />
+            <p id="name-error" class="field-error hidden" aria-live="polite"></p>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="phone" class="field-label">Phone number *</label>
+              <input id="phone" name="📞 Phone" type="tel" autocomplete="tel" required class="field" aria-describedby="phone-error" />
+              <p id="phone-error" class="field-error hidden" aria-live="polite"></p>
+            </div>
+            <div>
+              <label for="email" class="field-label">Email *</label>
+              <input id="email" name="email" type="email" autocomplete="email" required class="field" aria-describedby="email-error" />
+              <p id="email-error" class="field-error hidden" aria-live="polite"></p>
+            </div>
+          </div>
+          <div>
+            <label for="notes" class="field-label">Anything else we should know?</label>
+            <textarea id="notes" name="📝 Special Requests" rows="4" class="field" placeholder="Buffet, music, accessibility needs…"></textarea>
+          </div>
+        </fieldset>
+
+        <div class="border-t border-soot/10 pt-6">
+          <label class="flex cursor-pointer gap-3 text-sm leading-relaxed">
+            <input id="ack" name="✅ Understands this is a request" value="Yes" type="checkbox" required class="mt-1 size-5 shrink-0 accent-banner-700" aria-describedby="ack-error" />
+            <span>I understand this is a <strong>request only</strong> and my booking is <strong>not confirmed</strong> until the club contacts me.</span>
+          </label>
+          <p id="ack-error" class="field-error hidden" aria-live="polite"></p>
+        </div>
+
+        <div id="form-error" role="alert" class="hidden border-l-4 border-banner-700 bg-banner-50 p-4 text-sm"></div>
+
+        <button type="submit" class="btn btn-banner w-full text-lg">
+          <span class="submit-label">Send booking request</span>
+        </button>
+        <p class="text-center text-xs text-soot/60">
+          We'll only use your details to deal with this request and your booking, never for marketing.
+          See our <a href="/privacy/" class="underline hover:text-banner-700">privacy policy</a> for how we look after your information.
+        </p>
+      </form>
+
+      <!-- Success state -->
+      <div id="booking-success" class="framed hidden p-8 text-center sm:p-12" tabindex="-1">
+        <span class="mx-auto flex size-16 items-center justify-center rounded-full bg-brass-200 text-brass-600"><Icon name="hourglass" size={30} /></span>
+        <h2 class="mt-5 text-3xl md:text-4xl">Request received</h2>
+        <p class="mx-auto mt-2 inline-block bg-brass-400 px-3 py-1 font-display text-sm tracking-widest uppercase">Not confirmed yet</p>
+        <p class="mx-auto mt-5 max-w-md leading-relaxed text-soot/80">
+          Thanks, <span id="success-name">we've got your request</span>. We've received your request for <strong id="success-date"></strong>.
+          A member of the club team will review it and contact you to confirm. <strong>Your date isn't reserved until then.</strong>
+        </p>
+        <p class="mt-6 text-sm text-soot/70">Need to chat sooner? Call us on <a href={club.phoneHref} class="font-semibold text-banner-700 underline">{club.phone}</a>.</p>
+      </div>
+    </div>
+
+    <aside class="space-y-6">
+      <div class="framed p-6">
+        <h2 class="text-xl">Good to know</h2>
+        <ul class="mt-4 space-y-3 text-sm">
+          <li class="flex gap-2"><Icon name="calendar" size={18} class="mt-0.5 shrink-0 text-banner-700" />Bookings on Thursdays &amp; Fridays</li>
+          <li class="flex gap-2"><Icon name="users" size={18} class="mt-0.5 shrink-0 text-banner-700" />Up to 120 guests</li>
+          <li class="flex gap-2"><Icon name="star" size={18} class="mt-0.5 shrink-0 text-banner-700" />Birthday parties from 22nd birthdays upwards</li>
+          <li class="flex gap-2"><Icon name="hourglass" size={18} class="mt-0.5 shrink-0 text-banner-700" />Requests are confirmed by the club, not automatically</li>
+        </ul>
+      </div>
+      <div class="grain bg-banner-800 p-6 text-parchment">
+        <h2 class="text-xl text-brass-300">Rather talk?</h2>
+        <p class="mt-2 text-sm text-parchment/80">Give us a ring during opening hours.</p>
+        <a href={club.phoneHref} class="btn btn-brass mt-4 w-full"><Icon name="phone" size={18} /> {club.phone}</a>
+      </div>
+    </aside>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('booking-form') as HTMLFormElement;
+  const $ = <T extends HTMLElement = HTMLInputElement>(id: string) => document.getElementById(id) as T;
+
+  const date = $('date');
+  const time = $<HTMLSelectElement>('time');
+  const occasion = $<HTMLSelectElement>('occasion');
+  const customWrap = $<HTMLDivElement>('custom-time-wrap');
+  const ageWrap = $<HTMLDivElement>('age-wrap');
+  const otherWrap = $<HTMLDivElement>('other-wrap');
+
+  // Earliest date: tomorrow (local)
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  date.min = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
+
+  const toggle = (wrap: HTMLElement, show: boolean, ids: string[]) => {
+    wrap.classList.toggle('hidden', !show);
+    ids.forEach((id) => { const el = $(id); el.required = show; if (!show) { el.value = ''; setError(id, ''); } });
+  };
+  time.addEventListener('change', () => toggle(customWrap, time.value === 'custom', ['custom-time', 'arrival']));
+  occasion.addEventListener('change', () => {
+    toggle(ageWrap, occasion.value === 'Birthday', ['age']);
+    toggle(otherWrap, occasion.value === 'Other', ['other']);
+  });
+
+  function setError(id: string, msg: string) {
+    const input = $(id);
+    const err = document.getElementById(`${id}-error`);
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    if (err) { err.textContent = msg; err.classList.toggle('hidden', !msg); }
+  }
+
+  const parseDate = (v: string) => { const [y, m, d] = v.split('-').map(Number); return new Date(y, m - 1, d); };
+
+  function validateDate(): string {
+    if (!date.value) return 'Please choose a date.';
+    const d = parseDate(date.value);
+    if (date.min && date.value < date.min) return 'Please choose a date in the future.';
+    if (![4, 5].includes(d.getDay())) return 'Sorry, we can only take bookings on Thursdays and Fridays.';
+    return '';
+  }
+  date.addEventListener('change', () => setError('date', validateDate()));
+
+  function validate(): boolean {
+    const errors: [string, string][] = [];
+    errors.push(['date', validateDate()]);
+    errors.push(['time', time.value ? '' : 'Please choose a time.']);
+    const g = Number($('guests').value);
+    errors.push(['guests', !g ? 'Please tell us roughly how many guests.' : g > 120 ? 'The maximum is 120 guests.' : g < 1 ? 'Please enter at least 1 guest.' : '']);
+    errors.push(['occasion', occasion.value ? '' : 'Please choose an occasion.']);
+    if (occasion.value === 'Birthday') {
+      const a = Number($('age').value);
+      errors.push(['age', !a ? 'Please tell us which birthday it is.' : a < 22 ? "Sorry, we don't host birthday parties before 22nd birthdays." : '']);
+    }
+    errors.push(['name', $('name').value.trim() ? '' : 'Please enter your name.']);
+    errors.push(['phone', $('phone').value.replace(/\D/g, '').length >= 10 ? '' : 'Please enter a phone number we can reach you on.']);
+    errors.push(['email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('email').value.trim()) ? '' : 'Please enter a valid email address.']);
+    errors.push(['ack', $('ack').checked ? '' : 'Please tick to confirm you understand this is a request.']);
+    for (const id of ['custom-time', 'arrival', 'other']) {
+      const el = $(id);
+      if (el.required && !el.value.trim()) { el.setAttribute('aria-invalid', 'true'); errors.push([id, ' ']); } else el.removeAttribute('aria-invalid');
+    }
+    errors.forEach(([id, msg]) => { if (!['custom-time', 'arrival', 'other'].includes(id)) setError(id, msg); });
+    const first = errors.find(([, m]) => m);
+    if (first) $(first[0]).focus();
+    return !first;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formError = $<HTMLDivElement>('form-error');
+    formError.classList.add('hidden');
+    if (!validate()) return;
+
+    const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    const label = btn.querySelector('.submit-label')!;
+    btn.disabled = true;
+    label.textContent = 'Sending request…';
+
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(String(res.status));
+      const pretty = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(parseDate(date.value));
+      $('success-date').textContent = pretty;
+      $('success-name').textContent = $('name').value.trim().split(' ')[0];
+      form.classList.add('hidden');
+      const success = $<HTMLDivElement>('booking-success');
+      success.classList.remove('hidden');
+      success.focus();
+      success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch {
+      formError.innerHTML = 'Sorry, your request didn\'t send. Please try again, or call us on <a class="font-semibold underline" href="tel:+441142754671">0114 275 4671</a>.';
+      formError.classList.remove('hidden');
+      btn.disabled = false;
+      label.textContent = 'Send booking request';
+    }
+  });
+</script>

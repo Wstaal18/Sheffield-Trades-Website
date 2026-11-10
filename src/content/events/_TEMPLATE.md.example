@@ -1,0 +1,13 @@
+---
+# Copy this file, rename it (e.g. 2026-12-31-new-years-eve.md) and fill in the details.
+title: New Year's Eve Party
+date: 2026-12-31T19:00:00        # one-off event date & start time (remove for recurring events)
+# recurring: Every Thursday      # use this instead of `date` for recurring events
+time: 7pm till late
+price: Free for members
+summary: One or two sentences about the event.
+# image: ../../assets/images/your-poster.jpg   # upload the image to src/assets/images/ first
+# imageAlt: Description of the poster
+# poster: live                  # artwork if no image: live | bingo | karate
+# posterText: Live Music
+---

@@ -1,0 +1,24 @@
+---
+/** Fixed bottom action bar on phones & tablets: Call / Directions / Book. */
+import Icon from './Icon.astro';
+import { club } from '../data/club';
+---
+<nav aria-label="Quick actions" class="fixed inset-x-0 bottom-0 z-40 border-t-2 border-brass-400 bg-banner-900/95 pb-[env(safe-area-inset-bottom)] text-parchment shadow-[0_-6px_20px_rgb(0_0_0/0.25)] backdrop-blur lg:hidden">
+  <ul class="grid h-16 grid-cols-[1fr_1fr_1.4fr]">
+    <li>
+      <a href={club.phoneHref} class="flex h-full flex-col items-center justify-center gap-0.5 font-display text-[0.7rem] tracking-widest uppercase active:bg-banner-800">
+        <Icon name="phone" size={20} class="text-brass-300" /> Call
+      </a>
+    </li>
+    <li class="border-x border-white/10">
+      <a href={club.mapsLink} target="_blank" rel="noopener" class="flex h-full flex-col items-center justify-center gap-0.5 font-display text-[0.7rem] tracking-widest uppercase active:bg-banner-800">
+        <Icon name="pin" size={20} class="text-brass-300" /> Directions
+      </a>
+    </li>
+    <li class="p-2">
+      <a href="/book/" class="flex h-full items-center justify-center gap-1.5 rounded-sm bg-brass-400 font-display text-sm tracking-wider text-soot uppercase active:bg-brass-300">
+        Request booking
+      </a>
+    </li>
+  </ul>
+</nav>

@@ -1,0 +1,91 @@
+---
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+import heroImg from '../assets/images/club-hero.jpeg';
+import { club, openingHours } from '../data/club';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Extra JSON-LD objects (e.g. Event schema) */
+  schema?: object[];
+}
+
+const {
+  title,
+  description = `${club.name}: a members' club and community pub on Duke Street, Sheffield. Live entertainment, bingo, karaoke, cheap drinks and function room hire.`,
+  schema = [],
+} = Astro.props;
+
+const fullTitle = title ? `${title} | ${club.name}` : `${club.name} | Community Club & Events, Sheffield`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const showMobileBar = !Astro.url.pathname.startsWith('/book');
+const ogImage = await getImage({ src: heroImg, width: 1200, height: 630, format: 'jpg', fit: 'cover' });
+const ogImageUrl = new URL(ogImage.src, Astro.site);
+
+const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const businessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BarOrPub',
+  name: club.name,
+  url: Astro.site?.toString(),
+  image: ogImageUrl.toString(),
+  telephone: club.phone,
+  foundingDate: String(club.established),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: club.address.street,
+    addressLocality: club.address.city,
+    postalCode: club.address.postcode,
+    addressCountry: club.address.country,
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: club.geo.lat, longitude: club.geo.lng },
+  hasMap: club.mapsLink,
+  sameAs: [club.facebook, club.youtube],
+  openingHoursSpecification: openingHours.flatMap((g) =>
+    g.sessions.map(([opens, closes]) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: g.days.map((d) => dayNames[d]),
+      opens,
+      closes: closes === '24:00' ? '23:59' : closes,
+    })),
+  ),
+};
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#6f151b" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={club.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify([businessSchema, ...schema])} />
+  </head>
+  <body class:list={['flex min-h-dvh flex-col', showMobileBar && 'has-mobile-bar']}>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-brass-400 focus:px-4 focus:py-2 focus:text-soot">Skip to content</a>
+    <Header />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+    {showMobileBar && <MobileBar />}
+  </body>
+</html>

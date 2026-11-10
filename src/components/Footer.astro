@@ -1,0 +1,56 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/images/logo-disc.png';
+import Icon from './Icon.astro';
+import Email from './Email.astro';
+import RatingBadge from './RatingBadge.astro';
+import { club, openingHours, formatSessions } from '../data/club';
+---
+<footer class="grain bg-soot text-parchment/80">
+  <div class="container-site grid gap-10 py-14 md:grid-cols-3">
+    <div>
+      <div class="flex items-center gap-3">
+        <Image src={logo} alt="" width={128} height={128} class="size-16" />
+        <p class="font-display text-xl leading-tight text-parchment uppercase">
+          Sheffield Trades<br /><span class="text-sm tracking-[0.2em] text-brass-300">&amp; Labour Club</span>
+        </p>
+      </div>
+      <p class="mt-4 max-w-xs text-sm">{club.tagline}</p>
+      <RatingBadge variant="footer" class="mt-5" />
+      <div class="mt-5 flex gap-3">
+        <a href={club.facebook} target="_blank" rel="noopener" class="rounded-full bg-soot-light p-2.5 hover:bg-brass-400 hover:text-soot" aria-label="Facebook"><Icon name="facebook" /></a>
+        <a href={club.youtube} target="_blank" rel="noopener" class="rounded-full bg-soot-light p-2.5 hover:bg-brass-400 hover:text-soot" aria-label="YouTube"><Icon name="youtube" /></a>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="mb-4 text-lg text-brass-300">Opening hours</h2>
+      <dl class="space-y-3 text-sm">
+        {openingHours.map((g) => (
+          <div>
+            <dt class="font-semibold text-parchment">{g.label}</dt>
+            <dd>{formatSessions(g.sessions)}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+
+    <div>
+      <h2 class="mb-4 text-lg text-brass-300">Visit us</h2>
+      <address class="space-y-3 text-sm not-italic">
+        <a href={club.mapsLink} target="_blank" rel="noopener" class="flex gap-2 hover:text-brass-300">
+          <Icon name="pin" size={18} class="mt-0.5 shrink-0" />
+          <span>{club.address.street}<br />{club.address.city} {club.address.postcode}</span>
+        </a>
+        <a href={club.phoneHref} class="flex gap-2 hover:text-brass-300"><Icon name="phone" size={18} class="shrink-0" /> {club.phone}</a>
+        <Email class="flex gap-2 break-all hover:text-brass-300"><Icon name="mail" size={18} class="shrink-0" /></Email>
+      </address>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="container-site flex flex-col items-center justify-between gap-2 py-5 text-xs text-parchment/50 sm:flex-row">
+      <p>&copy; {new Date().getFullYear()} {club.name}. Serving Sheffield since {club.established}.</p>
+      <a href="/privacy/" class="hover:text-brass-300 hover:underline">Privacy &amp; cookies</a>
+    </div>
+  </div>
+</footer>

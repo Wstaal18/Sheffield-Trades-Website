@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import Poster from './Poster.astro';
+import { type ClubEvent } from '../lib/content';
+
+interface Props { event: ClubEvent }
+const { data } = Astro.props.event;
+
+const fmt = (opts: Intl.DateTimeFormatOptions) => (d: Date) => new Intl.DateTimeFormat('en-GB', { ...opts, timeZone: 'Europe/London' }).format(d);
+// The tag on the image: "Sat 14 Nov" for one-offs, "Every Saturday" for recurring
+const tag = data.date ? fmt({ weekday: 'short', day: 'numeric', month: 'short' })(data.date) : data.recurring;
+const kind = data.date ? 'One-off event' : 'Regular';
+---
+<article class="framed group flex h-full flex-col overflow-hidden">
+  <div class="relative aspect-[4/3] shrink-0 overflow-hidden bg-soot">
+    {data.image ? (
+      <Image
+        src={data.image}
+        alt={data.imageAlt ?? ''}
+        width={800}
+        widths={[400, 600, 800]}
+        sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+        class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    ) : (
+      <Poster variant={data.poster} headline={data.posterText ?? data.title} sub={data.recurring} />
+    )}
+    {tag && (
+      <span class="absolute top-3 left-3 bg-brass-400 px-2.5 py-1 font-display text-xs font-semibold tracking-widest text-soot uppercase shadow">
+        {tag}
+      </span>
+    )}
+  </div>
+
+  <div class="flex flex-1 flex-col p-5">
+    <p class="text-[0.7rem] font-bold tracking-[0.2em] text-banner-700 uppercase">{kind}</p>
+    <h3 class="mt-1 line-clamp-2 text-xl leading-snug">{data.title}</h3>
+    <p class="mt-2 mb-5 line-clamp-4 text-[0.95rem] leading-relaxed text-soot/80">{data.summary}</p>
+
+    <dl class="mt-auto grid grid-cols-1 gap-2 border-t sm:grid-cols-2 sm:gap-3 border-dashed border-soot/20 pt-4 text-sm">
+      <div class="flex items-start gap-2">
+        <Icon name="clock" size={16} class="mt-0.5 shrink-0 text-banner-700" />
+        <div><dt class="sr-only">Time</dt><dd>{data.time ?? 'See details'}</dd></div>
+      </div>
+      <div class="flex items-start gap-2">
+        <Icon name="ticket" size={16} class="mt-0.5 shrink-0 text-banner-700" />
+        <div><dt class="sr-only">Price</dt><dd>{data.price ?? 'All welcome'}</dd></div>
+      </div>
+    </dl>
+  </div>
+</article>

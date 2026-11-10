@@ -1,0 +1,78 @@
+---
+/**
+ * Weekly programme.
+ * Desktop/tablet: all seven days in a grid, today highlighted.
+ * Phones: Mon–Sun tabs showing one day at a time, opening on today.
+ * Without JavaScript every day is simply shown.
+ */
+import Icon from './Icon.astro';
+import { week } from '../data/schedule';
+
+const iconFor = { deal: 'beer', entertainment: 'mic', club: 'users', note: 'info' } as const;
+---
+<div class="week">
+  <div role="tablist" aria-label="Day of the week" class="week-tabs mb-4 hidden grid-cols-7 gap-1 sm:hidden">
+    {week.map((d) => (
+      <button
+        type="button"
+        role="tab"
+        data-day={d.day}
+        aria-selected="false"
+        aria-controls={`day-${d.day}`}
+        class="week-tab rounded-sm border border-soot/15 bg-white py-2.5 font-display text-sm tracking-wider uppercase transition-colors aria-selected:border-banner-700 aria-selected:bg-banner-700 aria-selected:text-parchment"
+      >
+        {d.name.slice(0, 3)}
+      </button>
+    ))}
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {week.map((d) => (
+      <section id={`day-${d.day}`} data-day={d.day} class="week-day framed relative flex flex-col p-5 transition-shadow">
+        <span class="today-badge absolute -top-3 right-4 hidden bg-banner-700 px-2.5 py-0.5 font-display text-xs tracking-widest text-parchment uppercase">Today</span>
+        <h3 class="text-sm tracking-[0.2em] text-banner-700">{d.name}</h3>
+        <p class="mt-0.5 font-display text-xl leading-tight uppercase">{d.headline}</p>
+        <ul class="mt-4 space-y-3 border-t border-soot/10 pt-4">
+          {d.items.map((item) => (
+            <li class="flex gap-2.5">
+              <Icon name={iconFor[item.kind]} size={18} class={item.kind === 'deal' ? 'mt-0.5 shrink-0 text-brass-600' : 'mt-0.5 shrink-0 text-banner-700'} />
+              <div class="text-sm leading-snug">
+                <p class="font-semibold">{item.title}</p>
+                {item.time && <p class="text-soot/60">{item.time}</p>}
+                {item.detail && <p class="mt-0.5 text-soot/75">{item.detail}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</div>
+
+<script>
+  const today = new Intl.DateTimeFormat('en-GB', { weekday: 'short', timeZone: 'Europe/London' }).format(new Date());
+  const todayIdx = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(today);
+
+  document.querySelectorAll<HTMLElement>('.week').forEach((week) => {
+    const days = week.querySelectorAll<HTMLElement>('.week-day');
+    const tabs = week.querySelectorAll<HTMLButtonElement>('.week-tab');
+
+    // Highlight today
+    days.forEach((el) => {
+      if (Number(el.dataset.day) === todayIdx) {
+        el.classList.add('ring-2', 'ring-banner-700');
+        el.querySelector('.today-badge')?.classList.remove('hidden');
+      }
+    });
+
+    // Phone tabs
+    const select = (day: number) => {
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(Number(t.dataset.day) === day)));
+      days.forEach((el) => el.toggleAttribute('data-active', Number(el.dataset.day) === day));
+    };
+    tabs.forEach((t) => t.addEventListener('click', () => select(Number(t.dataset.day))));
+    week.querySelector('.week-tabs')?.classList.replace('hidden', 'grid');
+    week.setAttribute('data-tabs', '');
+    select(todayIdx);
+  });
+</script>

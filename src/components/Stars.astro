@@ -1,0 +1,25 @@
+---
+/** Row of 5 stars filled to the nearest half. */
+interface Props { rating: number; class?: string; size?: string }
+const { rating, class: className = '', size = 'size-4' } = Astro.props;
+const uid = `half-${Math.random().toString(36).slice(2, 8)}`;
+const fills = Array.from({ length: 5 }, (_, i) => (rating >= i + 1 ? 'full' : rating >= i + 0.5 ? 'half' : 'empty'));
+---
+<span class:list={['inline-flex gap-0.5', className]} role="img" aria-label={`Rated ${rating} out of 5`}>
+  <svg width="0" height="0" class="absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id={uid}><stop offset="50%" stop-color="currentColor" /><stop offset="50%" stop-color="currentColor" stop-opacity="0" /></linearGradient>
+    </defs>
+  </svg>
+  {fills.map((f) => (
+    <svg viewBox="0 0 24 24" class={size} aria-hidden="true">
+      <path
+        d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2L5.8 21 7 14.2 2 9.3l6.9-1Z"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linejoin="round"
+        fill={f === 'full' ? 'currentColor' : f === 'half' ? `url(#${uid})` : 'none'}
+      />
+    </svg>
+  ))}
+</span>

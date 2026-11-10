@@ -1,0 +1,28 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { fbImage, postDate, type FbPost } from '../lib/content';
+
+interface Props { post: FbPost; clamp?: boolean }
+const { post, clamp = true } = Astro.props;
+const img = fbImage(post.image);
+---
+<article class="framed mb-6 break-inside-avoid overflow-hidden">
+  {img && (
+    <a href={post.permalink} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+      <Image src={img} alt="" width={700} widths={[400, 700]} sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw" class="w-full" />
+    </a>
+  )}
+  <div class="p-5">
+    <p class="flex items-center gap-2 text-xs font-semibold tracking-wider text-banner-700 uppercase">
+      <Icon name="facebook" size={14} />
+      <time datetime={post.createdTime}>{postDate(post.createdTime)}</time>
+    </p>
+    {post.message && (
+      <p class:list={['mt-2 text-[0.95rem] leading-relaxed whitespace-pre-line text-soot/85', clamp && 'line-clamp-6']}>{post.message}</p>
+    )}
+    <a href={post.permalink} target="_blank" rel="noopener" class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-banner-700 hover:underline">
+      View on Facebook <Icon name="external" size={14} />
+    </a>
+  </div>
+</article>

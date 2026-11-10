@@ -1,0 +1,57 @@
+---
+/**
+ * Google rating + Facebook "recommend" figure.
+ *  - hero:   trust line under the homepage headline
+ *  - footer: two small framed blocks
+ * Each part only renders if its figure is set in src/data/reviews.ts.
+ */
+import Stars from './Stars.astro';
+import Icon from './Icon.astro';
+import { googleReviews, facebookReviews } from '../data/reviews';
+
+interface Props { variant?: 'hero' | 'footer'; class?: string }
+const { variant = 'hero', class: className = '' } = Astro.props;
+const { rating, count } = googleReviews;
+const { recommendPercent: fbPct, count: fbCount } = facebookReviews;
+const hasAny = rating !== null || fbPct !== null;
+---
+{hasAny && (
+  variant === 'hero' ? (
+    <a href="/#reviews" class:list={['flex flex-col gap-2 text-sm text-parchment/85 hover:text-parchment sm:flex-row sm:items-center sm:gap-5', className]}>
+      {rating !== null && (
+        <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <Stars rating={rating} size="size-5" class="text-brass-400" />
+          <span><strong class="font-semibold text-parchment">{rating.toFixed(1)} out of 5</strong> from {count} Google reviews</span>
+        </span>
+      )}
+      {rating !== null && fbPct !== null && <span class="hidden h-5 w-px bg-parchment/25 sm:block" aria-hidden="true" />}
+      {fbPct !== null && (
+        <span class="flex items-center gap-2">
+          <Icon name="facebook" size={18} class="text-brass-400" />
+          <span><strong class="font-semibold text-parchment">{fbPct}% recommend</strong> us on Facebook</span>
+        </span>
+      )}
+    </a>
+  ) : (
+    <div class:list={['flex flex-wrap gap-3', className]}>
+      {rating !== null && (
+        <a href="/#reviews" class="inline-flex items-center gap-3 border border-parchment/15 px-4 py-3 transition-colors hover:border-brass-400">
+          <span class="font-display text-3xl leading-none font-bold text-brass-300">{rating.toFixed(1)}</span>
+          <span class="flex flex-col gap-1">
+            <Stars rating={rating} size="size-3.5" class="text-brass-400" />
+            <span class="text-xs text-parchment/70">{count} Google reviews</span>
+          </span>
+        </a>
+      )}
+      {fbPct !== null && (
+        <a href="/#reviews" class="inline-flex items-center gap-3 border border-parchment/15 px-4 py-3 transition-colors hover:border-brass-400">
+          <span class="font-display text-3xl leading-none font-bold text-brass-300">{fbPct}%</span>
+          <span class="flex flex-col gap-1">
+            <span class="flex items-center gap-1 text-xs font-semibold text-parchment"><Icon name="facebook" size={13} class="text-brass-400" /> Recommend</span>
+            <span class="text-xs text-parchment/70">{fbCount} Facebook reviews</span>
+          </span>
+        </a>
+      )}
+    </div>
+  )
+)}

@@ -1,0 +1,62 @@
+---
+/**
+ * Click-to-load Google Map.
+ * Google Maps can set cookies, so the iframe isn't loaded until the visitor
+ * asks for it. That keeps the site free of non-essential cookies (no banner needed).
+ * The choice can be remembered on this device; it can be cleared on /privacy/.
+ */
+import Icon from './Icon.astro';
+import { club } from '../data/club';
+interface Props { class?: string }
+---
+<div class:list={['map-embed relative overflow-hidden bg-parchment-dark', Astro.props.class]} data-src={club.mapsEmbed} data-title={`Map showing ${club.name}`}>
+  <div class="map-placeholder absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
+    <!-- simple street-map pattern so the placeholder doesn't look empty -->
+    <svg class="absolute inset-0 size-full opacity-60" aria-hidden="true" preserveAspectRatio="xMidYMid slice" viewBox="0 0 400 300">
+      <rect width="400" height="300" fill="#efe5d1" />
+      <g stroke="#fff" stroke-linecap="round" fill="none">
+        <path d="M-10 210 L420 120" stroke-width="16" />
+        <path d="M120 -10 L180 320" stroke-width="12" />
+        <path d="M260 -10 L300 320" stroke-width="9" />
+        <path d="M-10 60 L420 90" stroke-width="7" />
+        <path d="M-10 280 L420 250" stroke-width="7" />
+      </g>
+    </svg>
+    <span class="relative flex size-14 items-center justify-center rounded-full bg-banner-700 text-parchment shadow-lg"><Icon name="pin" size={26} /></span>
+    <p class="relative font-display text-lg tracking-wide uppercase">{club.address.street}, {club.address.postcode}</p>
+    <button type="button" class="map-load btn btn-banner relative">Show map</button>
+    <label class="relative flex items-center gap-2 text-sm text-soot/75">
+      <input type="checkbox" class="map-remember size-4 accent-banner-700" />
+      Always show maps on this device
+    </label>
+    <p class="relative max-w-[17rem] text-xs text-soot/60">
+      The map is provided by Google, which may set cookies. <a href="/privacy/#cookies" class="underline">More info</a> ·
+      <a href={club.mapsLink} target="_blank" rel="noopener" class="underline">Open in Google Maps</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  const KEY = 'trades-maps-consent';
+  const read = () => { try { return localStorage.getItem(KEY) === 'yes'; } catch { return false; } };
+  const save = () => { try { localStorage.setItem(KEY, 'yes'); } catch { /* storage blocked */ } };
+
+  function load(el: HTMLElement) {
+    const iframe = document.createElement('iframe');
+    iframe.src = el.dataset.src!;
+    iframe.title = el.dataset.title!;
+    iframe.loading = 'lazy';
+    iframe.referrerPolicy = 'no-referrer-when-downgrade';
+    iframe.className = 'absolute inset-0 size-full border-0';
+    el.querySelector('.map-placeholder')?.remove();
+    el.appendChild(iframe);
+  }
+
+  document.querySelectorAll<HTMLElement>('.map-embed').forEach((el) => {
+    if (read()) return load(el);
+    el.querySelector('.map-load')?.addEventListener('click', () => {
+      if (el.querySelector<HTMLInputElement>('.map-remember')?.checked) save();
+      load(el);
+    });
+  });
+</script>

@@ -1,0 +1,225 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import TonightStrip from '../components/TonightStrip.astro';
+import EventCard from '../components/EventCard.astro';
+import WeekSchedule from '../components/WeekSchedule.astro';
+import FacebookPost from '../components/FacebookPost.astro';
+import Icon from '../components/Icon.astro';
+import Email from '../components/Email.astro';
+import Reviews from '../components/Reviews.astro';
+import RatingBadge from '../components/RatingBadge.astro';
+import MapEmbed from '../components/MapEmbed.astro';
+import SwipeHint from '../components/SwipeHint.astro';
+import hero from '../assets/images/club-hero.jpeg';
+import { club, openingHours, formatSessions } from '../data/club';
+import { getEvents, getFacebookPosts } from '../lib/content';
+
+const { upcoming, recurring } = await getEvents();
+const posts = getFacebookPosts(3);
+
+const deals = [
+  { day: 'Monday', title: 'Monday Club', time: '12pm–5pm', lines: ['Select lagers & beers £2.50', 'Guinness £3.60', 'Ciders & premium lager £2.95'] },
+  { day: 'Tuesday', title: 'Cheap Tuesday', time: 'All day', lines: ['All pints on draught £2.95'] },
+  { day: 'Every day we’re open', title: 'Happy Hour', time: '2pm–3pm', lines: ['All pints on draught £2.95'] },
+  { day: 'Saturday', title: 'Concert Room', time: 'Saturday night', lines: ['25% off everything in the concert room'] },
+];
+
+// Google "Event" rich results for dated one-off events
+const eventSchema = upcoming.map((e) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: e.data.title,
+  description: e.data.summary,
+  startDate: e.data.date!.toISOString(),
+  ...(e.data.endDate && { endDate: e.data.endDate.toISOString() }),
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  eventStatus: 'https://schema.org/EventScheduled',
+  location: {
+    '@type': 'Place',
+    name: club.name,
+    address: `${club.address.street}, ${club.address.city} ${club.address.postcode}`,
+  },
+  organizer: { '@type': 'Organization', name: club.name, url: Astro.site?.toString() },
+}));
+---
+<Layout schema={eventSchema}>
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden bg-soot text-parchment">
+    <Image
+      src={hero}
+      alt=""
+      width={2200}
+      widths={[640, 1024, 1600, 2200]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+      class="absolute inset-0 -z-10 size-full object-cover opacity-45"
+    />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-soot via-soot/40 to-banner-950/50"></div>
+    <div class="container-site py-14 sm:py-24 md:py-36">
+      <p class="ribbon ml-3"><span class="sm:hidden">Est. {club.established} · Sheffield</span><span class="hidden sm:inline">Est. {club.established} · Duke Street, Sheffield</span></p>
+      <h1 class="mt-5 max-w-4xl text-[2.9rem] leading-[0.95] font-bold sm:mt-6 sm:text-6xl md:text-8xl">
+        Your club.<br /><span class="text-brass-300">Your community.</span>
+      </h1>
+      <p class="mt-5 max-w-xl text-base text-parchment/85 sm:mt-6 sm:text-lg md:text-xl">{club.tagline}</p>
+      <div class="mt-8 grid gap-3 sm:mt-9 sm:flex sm:flex-wrap">
+        <a href="#whats-on" class="btn btn-brass">See what's on <Icon name="arrow" size={18} /></a>
+        <a href="/book/" class="btn btn-ghost">Request a booking</a>
+      </div>
+      <RatingBadge variant="hero" class="mt-6 sm:mt-8" />
+    </div>
+  </section>
+
+  <TonightStrip />
+
+  <!-- What's on -->
+  <section id="whats-on" class="border-b border-soot/10 bg-parchment-dark py-12 md:py-24">
+    <div class="container-site">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="ribbon ml-3">What's on</p>
+          <h2 class="mt-4 text-4xl md:text-5xl">Nights at the club</h2>
+        </div>
+        <a href="#weekly" class="flex items-center gap-1.5 font-display tracking-widest text-banner-700 uppercase hover:underline">The week at a glance <Icon name="arrow" size={16} /></a>
+      </div>
+
+      {upcoming.length > 0 && (
+        <>
+          <h3 class="mt-10 text-sm tracking-[0.2em] text-soot/60">Coming up</h3>
+          <div class="swipe-row mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {upcoming.map((e) => <EventCard event={e} />)}
+          </div>
+          {upcoming.length > 1 && <SwipeHint />}
+          <h3 class="mt-12 text-sm tracking-[0.2em] text-soot/60">Every week</h3>
+        </>
+      )}
+      <div class:list={['swipe-row grid gap-6 sm:grid-cols-2 lg:grid-cols-3', upcoming.length > 0 ? 'mt-4' : 'mt-8 sm:mt-10']}>
+        {recurring.map((e) => <EventCard event={e} />)}
+      </div>
+      {recurring.length > 1 && <SwipeHint />}
+    </div>
+  </section>
+
+  <!-- Deals -->
+  <section id="deals" class="container-site py-12 md:py-24">
+    <p class="ribbon ml-3">Members' specials</p>
+    <h2 class="mt-4 text-4xl md:text-5xl">Proper club prices</h2>
+    <div class="swipe-row mt-8 grid gap-5 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4">
+      {deals.map((d) => (
+        <article class="framed flex flex-col p-6">
+          <p class="text-xs font-bold tracking-[0.2em] text-banner-700 uppercase">{d.day}</p>
+          <h3 class="mt-1 text-2xl">{d.title}</h3>
+          <p class="mt-1 flex items-center gap-1.5 text-sm text-soot/60"><Icon name="clock" size={14} />{d.time}</p>
+          <ul class="mt-4 space-y-2 border-t border-dashed border-soot/20 pt-4">
+            {d.lines.map((l) => {
+              const [label, price] = l.split(/ (?=£)/);
+              return (
+                <li class="flex items-baseline justify-between gap-3 text-sm">
+                  <span>{label}</span>
+                  {price && <span class="font-display text-xl font-semibold text-banner-700">{price}</span>}
+                </li>
+              );
+            })}
+          </ul>
+        </article>
+      ))}
+    </div>
+    <SwipeHint />
+  </section>
+
+  <Reviews />
+
+  <!-- Weekly programme -->
+  <section id="weekly" class="border-y border-soot/10 bg-parchment-dark py-12 md:py-24">
+    <div class="container-site">
+      <p class="ribbon ml-3">The week at a glance</p>
+      <h2 class="mt-4 text-4xl md:text-5xl">Something on every day</h2>
+      <div class="mt-8 sm:mt-10">
+        <WeekSchedule />
+      </div>
+    </div>
+  </section>
+
+  <!-- Facebook -->
+  <section id="news" class="container-site py-12 md:py-24">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="ribbon ml-3">Latest from the club</p>
+        <h2 class="mt-4 text-4xl md:text-5xl">Club news</h2>
+      </div>
+      <a href={club.facebook} target="_blank" rel="noopener" class="flex items-center gap-1.5 font-display tracking-widest text-banner-700 uppercase hover:underline"><Icon name="facebook" size={16} /> Follow us on Facebook</a>
+    </div>
+    {posts.length > 0 ? (
+      <>
+        <div class="mt-10 gap-6 sm:columns-2 lg:columns-3">
+          {posts.map((p, i) => (i < 2 ? <FacebookPost post={p} /> : <div class="hidden sm:block"><FacebookPost post={p} /></div>))}
+        </div>
+        <div class="mt-4 text-center">
+          <a href="/news/" class="btn btn-banner">More club news</a>
+        </div>
+      </>
+    ) : (
+      <div class="framed mt-10 flex flex-col items-center gap-4 p-10 text-center">
+        <Icon name="facebook" size={36} class="text-banner-700" />
+        <p class="max-w-md text-soot/80">We post our latest entertainment, offers and club news on Facebook first.</p>
+        <a href={club.facebook} target="_blank" rel="noopener" class="btn btn-banner">See our Facebook page</a>
+      </div>
+    )}
+  </section>
+
+  <!-- Room hire CTA -->
+  <section class="grain bg-banner-800 text-parchment">
+    <div class="container-site grid items-center gap-8 py-16 md:grid-cols-[1.4fr_1fr] md:py-20">
+      <div>
+        <p class="ribbon ml-3">Room hire</p>
+        <h2 class="mt-4 text-4xl md:text-5xl">Celebrations, anniversaries &amp; wakes</h2>
+        <p class="mt-4 max-w-xl text-lg text-parchment/80">
+          Our room holds up to 120 guests and is available on Thursdays and Fridays. Send us a booking request and the club
+          will get back to you to talk it through and confirm.
+        </p>
+      </div>
+      <div class="flex flex-col gap-3 md:items-end">
+        <a href="/book/" class="btn btn-brass w-full md:w-auto">Request a booking <Icon name="arrow" size={18} /></a>
+        <a href={club.phoneHref} class="btn btn-ghost w-full md:w-auto"><Icon name="phone" size={18} /> {club.phone}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Find us -->
+  <section id="find-us" class="container-site grid gap-10 py-16 md:grid-cols-2 md:py-24">
+    <div>
+      <p class="ribbon ml-3">Find us</p>
+      <h2 class="mt-4 text-4xl md:text-5xl">Visit the club</h2>
+
+      <ul class="mt-6 space-y-3">
+        <li>
+          <a href={club.mapsLink} target="_blank" rel="noopener" class="flex gap-3 text-lg hover:text-banner-700">
+            <Icon name="pin" class="mt-1 shrink-0 text-banner-700" />{club.address.street}, {club.address.city} {club.address.postcode}
+          </a>
+        </li>
+        <li>
+          <a href={club.phoneHref} class="flex gap-3 font-semibold hover:text-banner-700"><Icon name="phone" class="shrink-0 text-banner-700" />{club.phone}</a>
+        </li>
+        <li>
+          <Email class="flex gap-3 break-all hover:text-banner-700"><Icon name="mail" class="shrink-0 text-banner-700" /></Email>
+        </li>
+        <li>
+          <a href={club.facebook} target="_blank" rel="noopener" class="flex gap-3 hover:text-banner-700"><Icon name="facebook" class="shrink-0 text-banner-700" />Message us on Facebook</a>
+        </li>
+      </ul>
+
+      <h3 class="mt-8 text-xl">Opening hours</h3>
+      <dl class="mt-3 space-y-3">
+        {openingHours.map((g) => (
+          <div class="flex flex-col justify-between gap-x-6 border-b border-dashed border-soot/20 pb-3 sm:flex-row sm:flex-wrap">
+            <dt class="font-semibold">{g.label}</dt>
+            <dd class="text-soot/75">{formatSessions(g.sessions)}</dd>
+          </div>
+        ))}
+      </dl>
+      <a href={club.mapsLink} target="_blank" rel="noopener" class="btn btn-banner mt-8">Get directions <Icon name="external" size={16} /></a>
+    </div>
+    <MapEmbed class="framed h-80 w-full min-w-0 sm:h-96 md:h-auto md:min-h-96" />
+  </section>
+</Layout>

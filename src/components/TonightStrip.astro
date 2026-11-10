@@ -1,0 +1,40 @@
+---
+/**
+ * "Today at the club" bar under the hero. Every day is rendered and the
+ * browser shows the right one, because the static site can't know today's
+ * date at build time.
+ */
+import Icon from './Icon.astro';
+import { week } from '../data/schedule';
+---
+<section aria-label="Today at the club" class="border-b-4 border-brass-400 bg-soot text-parchment">
+  <div class="container-site flex flex-col gap-3 py-4 md:flex-row md:items-center md:gap-6">
+    <p class="ribbon shrink-0 self-start md:self-auto">Today</p>
+    {week.map((d) => (
+      <div data-tonight={d.day} class="tonight hidden flex-1 flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+        <span class="font-display text-lg tracking-wide text-brass-300 uppercase">{d.name}: {d.headline}</span>
+        {d.items.slice(0, 3).map((i) => (
+          <span class="flex items-center gap-1.5 text-parchment/85">
+            <Icon name="check" size={14} class="text-brass-400" />
+            {i.title}{i.time && <span class="text-parchment/55">· {i.time}</span>}
+          </span>
+        ))}
+      </div>
+    ))}
+    <div data-tonight="fallback" class="tonight flex-1 text-sm">Something on every day of the week. See the full weekly programme.</div>
+    <a href="/#weekly" class="flex shrink-0 items-center gap-1.5 font-display text-sm tracking-widest text-brass-300 uppercase hover:text-brass-200">
+      Full week <Icon name="arrow" size={16} />
+    </a>
+  </div>
+</section>
+
+<script>
+  const today = new Intl.DateTimeFormat('en-GB', { weekday: 'short', timeZone: 'Europe/London' }).format(new Date());
+  const idx = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(today);
+  const el = document.querySelector<HTMLElement>(`.tonight[data-tonight="${idx}"]`);
+  if (el) {
+    el.classList.remove('hidden');
+    el.classList.add('flex');
+    document.querySelector('.tonight[data-tonight="fallback"]')?.classList.add('hidden');
+  }
+</script>

@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import FacebookPost from '../components/FacebookPost.astro';
+import Icon from '../components/Icon.astro';
+import { club } from '../data/club';
+import { getFacebookPosts } from '../lib/content';
+
+const posts = getFacebookPosts();
+---
+<Layout title="Club News" description="The latest news, entertainment and offers from Sheffield Trades & Labour Club, straight from our Facebook page.">
+  <PageHero
+    eyebrow="Club news"
+    title="Latest from the club"
+    intro="Straight from our Facebook page and updated automatically throughout the day."
+  >
+    <a href={club.facebook} target="_blank" rel="noopener" class="btn btn-brass mt-8"><Icon name="facebook" size={18} /> Follow us on Facebook</a>
+  </PageHero>
+
+  <section class="container-site py-16">
+    {posts.length > 0 ? (
+      <div class="gap-6 sm:columns-2 lg:columns-3">
+        {posts.map((p) => <FacebookPost post={p} clamp={false} />)}
+      </div>
+    ) : (
+      <div class="framed mx-auto flex max-w-xl flex-col items-center gap-4 p-10 text-center">
+        <Icon name="facebook" size={36} class="text-banner-700" />
+        <p class="text-soot/80">News is loading from Facebook. In the meantime, you can see all our posts on our Facebook page.</p>
+        <a href={club.facebook} target="_blank" rel="noopener" class="btn btn-banner">Open Facebook</a>
+      </div>
+    )}
+  </section>
+</Layout>

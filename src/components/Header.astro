@@ -1,0 +1,137 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/images/logo-disc.png';
+import Icon from './Icon.astro';
+import { club } from '../data/club';
+import { reviews } from '../data/reviews';
+
+// Sections of the home page, shown in a dropdown under "Home"
+const homeSections = [
+  { href: '/#whats-on', label: "What's On" },
+  { href: '/#deals', label: "Members' Specials" },
+  ...(reviews.length ? [{ href: '/#reviews', label: 'Reviews' }] : []),
+  { href: '/#weekly', label: 'Week at a Glance' },
+  { href: '/#find-us', label: 'Find Us' },
+];
+
+const path = Astro.url.pathname.replace(/\/?$/, '/');
+const onHome = path === '/';
+const onNews = path.startsWith('/news/');
+const linkBase = 'block px-3 py-2 font-display text-sm tracking-widest uppercase transition-colors hover:text-brass-300';
+const activeCls = 'text-brass-300 underline decoration-2 underline-offset-8';
+---
+<header class="sticky top-0 z-40 border-b-4 border-brass-400 bg-banner-800 text-parchment shadow-lg">
+  <div class="container-site flex h-16 items-center justify-between gap-4 md:h-20">
+    <a href="/" class="flex min-w-0 items-center gap-3">
+      <Image src={logo} alt="" width={104} height={104} class="size-11 shrink-0 drop-shadow md:size-13" loading="eager" />
+      <span class="min-w-0 font-display leading-tight uppercase">
+        <span class="block truncate text-lg font-semibold tracking-wide md:text-xl">Sheffield Trades</span>
+        <span class="block truncate text-[0.7rem] tracking-[0.25em] text-brass-300 md:text-xs">&amp; Labour Club · Est. {club.established}</span>
+      </span>
+    </a>
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        <li class="group relative" id="home-menu">
+          <div class="flex items-center">
+            <a href="/" aria-current={onHome ? 'page' : undefined} class:list={[linkBase, 'pr-1', onHome && activeCls]}>Home</a>
+            <button
+              type="button"
+              id="home-menu-toggle"
+              class="p-1.5 transition-colors hover:text-brass-300"
+              aria-expanded="false"
+              aria-controls="home-submenu"
+            >
+              <span class="sr-only">Home page sections</span>
+              <Icon name="chevron" size={16} class="transition-transform group-hover:rotate-180 group-data-open:rotate-180" />
+            </button>
+          </div>
+          <div
+            id="home-submenu"
+            class="invisible absolute top-full left-0 pt-2 opacity-0 transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 group-data-open:visible group-data-open:opacity-100"
+          >
+            <ul class="min-w-56 border-t-4 border-brass-400 bg-banner-900 py-2 shadow-xl">
+              {homeSections.map((s) => (
+                <li>
+                  <a href={s.href} class="block px-5 py-2.5 font-display text-sm tracking-widest uppercase hover:bg-banner-800 hover:text-brass-300">{s.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a href="/news/" aria-current={onNews ? 'page' : undefined} class:list={[linkBase, onNews && activeCls]}>Club News</a>
+        </li>
+        <li class="ml-3">
+          <a href="/book/" class="btn btn-brass px-4 py-2 text-sm">Request a booking</a>
+        </li>
+      </ul>
+    </nav>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      class="-mr-2 p-2 lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="sr-only">Menu</span>
+      <Icon name="menu" size={28} class="menu-open" />
+      <Icon name="close" size={28} class="menu-close hidden" />
+    </button>
+  </div>
+
+  <nav id="mobile-menu" aria-label="Main" class="hidden border-t border-banner-700 bg-banner-900 lg:hidden">
+    <ul class="container-site py-3">
+      <li>
+        <a href="/" aria-current={onHome ? 'page' : undefined} class:list={['block py-3 font-display text-lg tracking-widest uppercase', onHome ? 'text-brass-300' : 'text-parchment']}>Home</a>
+        <ul class="mb-2 ml-1 border-l-2 border-brass-400/50 pl-4">
+          {homeSections.map((s) => (
+            <li><a href={s.href} class="block py-2 font-display tracking-widest text-parchment/80 uppercase">{s.label}</a></li>
+          ))}
+        </ul>
+      </li>
+      <li>
+        <a href="/news/" aria-current={onNews ? 'page' : undefined} class:list={['block py-3 font-display text-lg tracking-widest uppercase', onNews ? 'text-brass-300' : 'text-parchment']}>Club News</a>
+      </li>
+      <li class="py-3">
+        <a href="/book/" class="btn btn-brass w-full">Request a booking</a>
+      </li>
+      <li class="py-3">
+        <a href={club.phoneHref} class="flex items-center gap-2 text-parchment/80"><Icon name="phone" size={18} /> {club.phone}</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  // Mobile menu
+  const btn = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const setMobile = (open: boolean) => {
+    btn?.setAttribute('aria-expanded', String(open));
+    menu?.classList.toggle('hidden', !open);
+    btn?.querySelector('.menu-open')?.classList.toggle('hidden', open);
+    btn?.querySelector('.menu-close')?.classList.toggle('hidden', !open);
+  };
+  btn?.addEventListener('click', () => setMobile(btn.getAttribute('aria-expanded') !== 'true'));
+  // Close after tapping a link to a section on the same page
+  menu?.querySelectorAll('a[href^="/#"]').forEach((a) => a.addEventListener('click', () => setMobile(false)));
+
+  // Desktop "Home" dropdown: opens on hover/focus via CSS; the chevron button toggles it for touch & keyboard
+  const homeMenu = document.getElementById('home-menu');
+  const homeToggle = document.getElementById('home-menu-toggle');
+  const setHome = (open: boolean) => {
+    homeToggle?.setAttribute('aria-expanded', String(open));
+    homeMenu?.toggleAttribute('data-open', open);
+  };
+  homeToggle?.addEventListener('click', () => setHome(homeToggle.getAttribute('aria-expanded') !== 'true'));
+  document.addEventListener('click', (e) => { if (!homeMenu?.contains(e.target as Node)) setHome(false); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { setHome(false); (document.activeElement as HTMLElement | null)?.blur(); }
+  });
+  homeMenu?.querySelectorAll('#home-submenu a').forEach((a) => a.addEventListener('click', () => {
+    setHome(false);
+    (a as HTMLElement).blur();
+  }));
+</script>

@@ -1,0 +1,8 @@
+---
+/** Small "swipe" cue shown only on phones under a swipe row. */
+interface Props { dark?: boolean }
+---
+<p class:list={['mt-1 flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase sm:hidden', Astro.props.dark ? 'text-parchment/50' : 'text-soot/45']} aria-hidden="true">
+  Swipe for more
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+</p>

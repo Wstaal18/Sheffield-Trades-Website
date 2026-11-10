@@ -1,0 +1,253 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Email from '../components/Email.astro';
+import Icon from '../components/Icon.astro';
+import { club } from '../data/club';
+import { privacy } from '../data/privacy';
+
+const toc = [
+  { id: 'who-we-are', label: 'Who we are' },
+  { id: 'what-we-collect', label: 'What we collect' },
+  { id: 'how-we-use-it', label: 'How we use it' },
+  { id: 'sharing', label: 'Who we share it with' },
+  { id: 'retention', label: 'How long we keep it' },
+  { id: 'rights', label: 'Your rights' },
+  { id: 'cookies', label: 'Cookies' },
+  { id: 'changes', label: 'Changes to this policy' },
+];
+---
+<Layout title="Privacy & Cookies" description={`How ${club.name} collects, uses and protects your personal information, and how we use cookies.`}>
+  <PageHero eyebrow="Privacy & cookies" title="Your privacy" intro={`How we look after the information you give us. Last updated ${privacy.lastUpdated}.`} />
+
+  <div class="container-site grid gap-12 py-14 lg:grid-cols-[15rem_1fr]">
+    <nav aria-label="On this page" class="hidden lg:block">
+      <div class="sticky top-28">
+        <p class="text-xs font-bold tracking-[0.2em] text-banner-700 uppercase">On this page</p>
+        <ul class="mt-3 space-y-2 border-l-2 border-soot/10 text-sm">
+          {toc.map((t) => <li><a href={`#${t.id}`} class="-ml-0.5 block border-l-2 border-transparent pl-3 hover:border-banner-700 hover:text-banner-700">{t.label}</a></li>)}
+        </ul>
+      </div>
+    </nav>
+
+    <article class="policy max-w-3xl">
+      <div class="framed mb-10 p-6">
+        <h2 class="!mt-0 flex items-center gap-2 !text-xl"><Icon name="info" class="text-banner-700" /> The short version</h2>
+        <ul>
+          <li>We only collect what you choose to send us, mainly through the booking request form.</li>
+          <li>We use it to reply to you and arrange your booking. That's it.</li>
+          <li>We never sell your details or use them for marketing.</li>
+          <li>Our website doesn't set any tracking or advertising cookies, and we don't use analytics.</li>
+          <li>You can ask us to see, correct or delete your information at any time.</li>
+        </ul>
+      </div>
+
+      <h2 id="who-we-are">1. Who we are</h2>
+      <p>
+        This website is run by <strong>{club.name}</strong>, {club.address.street}, {club.address.city} {club.address.postcode}
+        ("the club", "we", "us"). We are the <em>data controller</em> for the personal information described in this policy,
+        which means we decide how and why it's used.
+      </p>
+      <p>
+        Questions about your data? Email <Email class="font-semibold text-banner-700 underline" />, call us on
+        <a href={club.phoneHref} class="font-semibold text-banner-700 underline">{club.phone}</a>, or write to us at the address above.
+      </p>
+
+      <h2 id="what-we-collect">2. What we collect</h2>
+      <h3>When you send a booking request</h3>
+      <p>The <a href="/book/">booking request form</a> asks for:</p>
+      <ul>
+        <li>your name, phone number and email address;</li>
+        <li>details of the event: preferred date and time, number of guests, the occasion, and (for birthdays) which birthday it is;</li>
+        <li>anything else you choose to tell us in the "anything else" box.</li>
+      </ul>
+      <p>
+        Please only include what we need to plan your event. If you tell us about health or accessibility needs (for example, so we can
+        make sure a guest can get in and around the venue), we'll use that only to accommodate you, and only with your agreement.
+      </p>
+
+      <h3>When you contact us directly</h3>
+      <p>If you email, phone or message us on Facebook, we'll see your contact details and whatever you send us.</p>
+
+      <h3>When you visit the website</h3>
+      <p>
+        We don't run analytics or tracking on this site. Like all websites, our hosting provider (GitHub Pages) automatically processes
+        technical information such as your IP address and browser type in order to deliver the pages to you and keep the service secure.
+      </p>
+
+      <h2 id="how-we-use-it">3. How we use your information, and our legal basis</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead><tr><th>What we do</th><th>Why we're allowed to</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Reply to your booking request, check availability, confirm the details and run your event</td>
+              <td><strong>Contract</strong>: you've asked us to take steps towards a booking</td>
+            </tr>
+            <tr>
+              <td>Keep a record of bookings so we can deal with any questions, problems or disputes afterwards</td>
+              <td><strong>Legitimate interests</strong>: running the club properly</td>
+            </tr>
+            <tr>
+              <td>Use health or accessibility details you volunteer</td>
+              <td><strong>Your explicit consent</strong>, which you can withdraw at any time</td>
+            </tr>
+            <tr>
+              <td>Reply to emails, calls and messages</td>
+              <td><strong>Legitimate interests</strong>: answering people who get in touch</td>
+            </tr>
+            <tr>
+              <td>Keep financial records relating to bookings</td>
+              <td><strong>Legal obligation</strong>: tax and accounting rules</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>Sending a booking request doesn't confirm a booking.</strong> We review every request and contact you before anything is agreed.
+        We won't add you to any mailing list or send you marketing.
+      </p>
+
+      <h2 id="sharing">4. Who we share it with</h2>
+      <p>We don't sell or rent your information to anyone. We only use a small number of trusted services to run the website and our inbox:</p>
+      <ul>
+        <li><strong>Formspree, Inc.</strong> receives the booking form and forwards it to us by email. It stores submissions on our behalf.</li>
+        <li><strong>Google</strong> provides our email inbox (Gmail), where booking requests and emails arrive.</li>
+        <li><strong>GitHub, Inc.</strong> hosts the website.</li>
+      </ul>
+      <p>
+        These providers are based in, or may process data in, the <strong>United States</strong>. Where personal data is transferred outside the UK,
+        we rely on the safeguards these providers offer under UK data protection law, such as the UK–US "data bridge" or approved contract terms.
+      </p>
+      <p>We'll only share information with anyone else if the law requires us to, for example if asked by the police.</p>
+
+      <h2 id="retention">5. How long we keep it</h2>
+      <ul>
+        <li><strong>Booking requests that don't go ahead:</strong> deleted within {privacy.retentionDeclined}.</li>
+        <li><strong>Confirmed bookings:</strong> kept for {privacy.retentionConfirmed}, apart from financial records, which we must keep for 6 years.</li>
+        <li><strong>Emails and messages:</strong> kept for up to {privacy.retentionMessages}, then deleted.</li>
+      </ul>
+      <p>We delete booking requests from both our inbox and Formspree.</p>
+
+      <h2 id="rights">6. Your rights</h2>
+      <p>Under UK data protection law you have the right to:</p>
+      <ul>
+        <li><strong>see</strong> the information we hold about you (a "subject access request");</li>
+        <li><strong>correct</strong> anything that's wrong;</li>
+        <li><strong>have it deleted</strong>, unless we need to keep it (for example for tax records);</li>
+        <li><strong>object to</strong> or <strong>restrict</strong> how we use it;</li>
+        <li><strong>withdraw your consent</strong> where we rely on it;</li>
+        <li><strong>get a copy</strong> to take elsewhere (data portability).</li>
+      </ul>
+      <p>
+        To use any of these rights, contact us using the details in section 1. It's free, and we'll respond within one month.
+      </p>
+      <p>
+        If you're unhappy with how we've handled your information, please tell us first so we can put it right. You can also complain to the
+        <a href="https://ico.org.uk/make-a-complaint/" target="_blank" rel="noopener">Information Commissioner's Office (ICO)</a>, the UK's data protection
+        regulator, on 0303 123 1113.
+      </p>
+
+      <h2 id="cookies">7. Cookies</h2>
+      <p>
+        Cookies are small files that websites store on your device. <strong>This website does not set any cookies itself</strong>, and doesn't use
+        analytics, advertising or tracking tools. That's why you won't see a cookie banner.
+      </p>
+      <div class="overflow-x-auto">
+        <table>
+          <thead><tr><th>What</th><th>When</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Google Maps</strong></td>
+              <td>Only after you click "Show map"</td>
+              <td>The map is provided by Google, which may set its own cookies when it loads. See <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's privacy policy</a>.</td>
+            </tr>
+            <tr>
+              <td><strong>Map preference</strong></td>
+              <td>Only if you tick "Always show maps"</td>
+              <td>Saved in your browser's local storage (not a cookie) so we remember your choice. It never leaves your device.</td>
+            </tr>
+            <tr>
+              <td><strong>Facebook &amp; YouTube</strong></td>
+              <td>Only if you follow a link</td>
+              <td>Our Facebook and YouTube buttons are plain links. Nothing from those sites loads until you click. Club news shown on this site is copied from our Facebook page, so viewing it doesn't connect you to Facebook.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-4 flex flex-wrap items-center gap-3">
+        <button type="button" id="forget-maps" class="btn border-2 border-soot/20 py-2 text-sm hover:border-soot">Forget my map choice</button>
+        <span id="forget-maps-status" class="text-sm text-soot/70" aria-live="polite"></span>
+      </div>
+
+      <h2 id="changes">8. Changes to this policy</h2>
+      <p>
+        We may update this policy from time to time, for example if we start using a new service. The date at the top shows when it last changed.
+      </p>
+    </article>
+  </div>
+</Layout>
+
+<script>
+  const btn = document.getElementById('forget-maps');
+  const status = document.getElementById('forget-maps-status');
+  btn?.addEventListener('click', () => {
+    try { localStorage.removeItem('trades-maps-consent'); } catch { /* storage blocked */ }
+    if (status) status.textContent = 'Done. Maps will ask before loading again.';
+  });
+</script>
+
+<style>
+  .policy :global(h2) {
+    margin-top: 3rem;
+    font-size: 1.75rem;
+    line-height: 1.15;
+  }
+  .policy :global(h3) {
+    margin-top: 1.75rem;
+    font-family: var(--font-sans);
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .policy :global(p),
+  .policy :global(ul),
+  .policy :global(table) {
+    margin-top: 0.85rem;
+    line-height: 1.7;
+    color: rgb(26 22 20 / 0.85);
+  }
+  .policy :global(ul) {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .policy :global(li + li) {
+    margin-top: 0.35rem;
+  }
+  .policy :global(a:not(.btn)) {
+    color: var(--color-banner-700);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .policy :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.925rem;
+    background: white;
+  }
+  .policy :global(th),
+  .policy :global(td) {
+    border: 1px solid rgb(26 22 20 / 0.12);
+    padding: 0.65rem 0.85rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  .policy :global(th) {
+    background: var(--color-parchment-dark);
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+</style>

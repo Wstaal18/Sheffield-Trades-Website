@@ -1,0 +1,108 @@
+---
+/**
+ * Built-in poster artwork for events without a photo.
+ * Pure SVG + text, so it's sharp at any size and weighs almost nothing.
+ */
+interface Props {
+  variant?: 'live' | 'bingo' | 'karate';
+  headline: string;
+  sub?: string;
+}
+const { variant = 'live', headline, sub } = Astro.props;
+
+// Sunburst rays for the "live" poster, fanning up from the stage
+const rays = Array.from({ length: 18 }, (_, i) => {
+  const a1 = Math.PI + (i * Math.PI) / 18;
+  const a2 = a1 + Math.PI / 36;
+  const r = 600;
+  return `M200 330 L${200 + r * Math.cos(a1)} ${330 + r * Math.sin(a1)} L${200 + r * Math.cos(a2)} ${330 + r * Math.sin(a2)} Z`;
+}).join(' ');
+
+const balls = [
+  { x: 50, y: 98, r: 30, fill: '#ddb04c', label: '♪' },
+  { x: 168, y: 40, r: 17, fill: '#f8f2e6', label: '9', dark: true },
+  { x: 290, y: 66, r: 30, fill: '#a8242a', label: '22' },
+  { x: 362, y: 150, r: 26, fill: '#2f6b4f', label: '♫' },
+  { x: 128, y: 138, r: 21, fill: '#2b4c7e', label: '7' },
+  { x: 232, y: 148, r: 24, fill: '#ddb04c', label: '45' },
+];
+---
+<div class="poster relative size-full overflow-hidden" aria-hidden="true">
+  {variant === 'live' && (
+    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" class="absolute inset-0 size-full">
+      <defs>
+        <radialGradient id="live-bg" cx="50%" cy="100%" r="90%">
+          <stop offset="0" stop-color="#a8242a" />
+          <stop offset="0.55" stop-color="#6f151b" />
+          <stop offset="1" stop-color="#2e070a" />
+        </radialGradient>
+        <linearGradient id="live-spot" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff" stop-opacity="0.22" />
+          <stop offset="1" stop-color="#fff" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <rect width="400" height="300" fill="url(#live-bg)" />
+      <path d={rays} fill="#ddb04c" opacity="0.1" />
+      <polygon points="150,0 250,0 330,300 70,300" fill="url(#live-spot)" />
+      <g fill="#e9cb7a" opacity="0.55" font-family="serif">
+        <text x="40" y="70" font-size="34">♪</text>
+        <text x="335" y="95" font-size="42">♫</text>
+        <text x="300" y="45" font-size="22">♪</text>
+        <text x="70" y="160" font-size="22">♫</text>
+      </g>
+      <!-- microphone -->
+      <g transform="translate(200 108)" stroke="#e9cb7a" stroke-width="5" fill="none" stroke-linecap="round">
+        <rect x="-16" y="-48" width="32" height="56" rx="16" fill="#1a1614" />
+        <path d="M-16 -30h32M-16 -18h32" stroke-width="2.5" opacity="0.6" />
+        <path d="M-30 -8a30 30 0 0 0 60 0M0 22v20M-16 42h32" />
+      </g>
+      <rect x="0" y="292" width="400" height="8" fill="#ddb04c" />
+    </svg>
+  )}
+
+  {variant === 'bingo' && (
+    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" class="absolute inset-0 size-full">
+      <rect width="400" height="300" fill="#1a1614" />
+      <g stroke="#ddb04c" stroke-opacity="0.08" stroke-width="1">
+        {Array.from({ length: 9 }, (_, i) => <line x1={i * 50} y1="0" x2={i * 50} y2="300" />)}
+        {Array.from({ length: 7 }, (_, i) => <line x1="0" y1={i * 50} x2="400" y2={i * 50} />)}
+      </g>
+      {balls.map((b) => (
+        <g>
+          <circle cx={b.x} cy={b.y} r={b.r} fill={b.fill} />
+          <circle cx={b.x - b.r * 0.35} cy={b.y - b.r * 0.4} r={b.r * 0.25} fill="#fff" opacity="0.35" />
+          <circle cx={b.x} cy={b.y} r={b.r * 0.58} fill="#f8f2e6" />
+          <text x={b.x} y={b.y} dy="0.36em" text-anchor="middle" font-size={b.r * 0.62} font-weight="700" fill="#1a1614" font-family="Oswald Variable, sans-serif">{b.label}</text>
+        </g>
+      ))}
+      <rect x="0" y="292" width="400" height="8" fill="#ddb04c" />
+    </svg>
+  )}
+
+  {variant === 'karate' && (
+    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" class="absolute inset-0 size-full">
+      <rect width="400" height="300" fill="#f8f2e6" />
+      <circle cx="310" cy="80" r="120" fill="#a8242a" opacity="0.9" />
+      <!-- black belt across the poster -->
+      <g transform="rotate(-10 200 170) translate(0 -62)">
+        <rect x="-40" y="150" width="480" height="40" fill="#1a1614" />
+        <rect x="-40" y="155" width="480" height="3" fill="#ddb04c" opacity="0.7" />
+        <rect x="-40" y="182" width="480" height="3" fill="#ddb04c" opacity="0.7" />
+        <rect x="278" y="142" width="44" height="56" rx="6" fill="#2a2421" />
+        <path d="M290 196 L268 268 L296 262 Z M310 196 L336 266 L308 262 Z" fill="#1a1614" />
+      </g>
+      <rect x="0" y="292" width="400" height="8" fill="#ddb04c" />
+    </svg>
+  )}
+
+  <div class:list={[
+    'absolute inset-x-0 bottom-0 p-5 pb-6',
+    variant === 'karate' ? 'text-soot' : 'text-parchment',
+  ]}>
+    <p class:list={[
+      'font-display text-4xl leading-[0.9] font-bold tracking-wide uppercase drop-shadow-sm',
+      variant === 'live' && 'text-brass-300',
+    ]}>{headline}</p>
+    {sub && <p class="mt-1 text-xs font-semibold tracking-[0.2em] uppercase opacity-80">{sub}</p>}
+  </div>
+</div>

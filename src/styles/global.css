@@ -1,0 +1,163 @@
+@import '@fontsource-variable/oswald';
+@import '@fontsource-variable/inter';
+@import 'tailwindcss';
+
+/*
+ * Palette inspired by trade union banners: deep banner red, brass gold,
+ * parchment cream and soot black.
+ */
+@theme {
+  --font-display: 'Oswald Variable', 'Arial Narrow', sans-serif;
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+
+  --color-banner-50: #fdf3f2;
+  --color-banner-100: #f9e1df;
+  --color-banner-600: #a8242a;
+  --color-banner-700: #8c1c22;
+  --color-banner-800: #6f151b;
+  --color-banner-900: #4d0d12;
+  --color-banner-950: #2e070a;
+
+  --color-brass-200: #f3e2b0;
+  --color-brass-300: #e9cb7a;
+  --color-brass-400: #ddb04c;
+  --color-brass-500: #c9952e;
+  --color-brass-600: #a37520;
+
+  --color-parchment: #f8f2e6;
+  --color-parchment-dark: #efe5d1;
+  --color-soot: #1a1614;
+  --color-soot-light: #2a2421;
+}
+
+@layer base {
+  html,
+  body {
+    /* never allow sideways scrolling on phones */
+    overflow-x: clip;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-parchment text-soot font-sans antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display uppercase tracking-wide;
+    text-wrap: balance;
+  }
+  /* Keep anchor targets clear of the sticky header */
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+  :focus-visible {
+    @apply outline-3 outline-offset-2 outline-brass-400;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+
+  /* Ribbon-style section label, like a union banner scroll */
+  .ribbon {
+    @apply relative inline-block bg-brass-400 px-5 py-1 font-display text-sm font-semibold uppercase tracking-[0.2em] text-soot;
+  }
+  .ribbon::before,
+  .ribbon::after {
+    content: '';
+    @apply absolute top-0 h-full w-3 bg-brass-500;
+  }
+  .ribbon::before {
+    left: -0.6rem;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 45% 50%);
+  }
+  .ribbon::after {
+    right: -0.6rem;
+    clip-path: polygon(0 0, 100% 0, 55% 50%, 100% 100%, 0 100%);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3 font-display text-base font-medium uppercase tracking-wider transition-colors;
+  }
+  .btn-brass {
+    @apply bg-brass-400 text-soot hover:bg-brass-300;
+  }
+  .btn-banner {
+    @apply bg-banner-700 text-parchment hover:bg-banner-600;
+  }
+  .btn-ghost {
+    @apply border-2 border-parchment/70 text-parchment hover:bg-parchment hover:text-soot;
+  }
+
+  /* Double-rule border, like a framed notice */
+  .framed {
+    @apply border border-soot/15 bg-white shadow-[0_0_0_4px_var(--color-parchment),0_0_0_5px_rgb(26_22_20/0.12)];
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold text-soot;
+  }
+  .field {
+    @apply w-full rounded-sm border border-soot/25 bg-white px-4 py-3 text-base text-soot placeholder:text-soot/40 focus:border-banner-700 focus:ring-2 focus:ring-banner-700/30 focus:outline-none;
+  }
+  .field[aria-invalid='true'] {
+    @apply border-banner-600 ring-2 ring-banner-600/20;
+  }
+  .field-hint {
+    @apply mt-1.5 text-sm text-soot/60;
+  }
+  .field-error {
+    @apply mt-1.5 text-sm font-medium text-banner-700;
+  }
+}
+
+/* Subtle paper grain for dark banner sections */
+.grain {
+  background-image:
+    radial-gradient(circle at 20% 0%, rgb(255 255 255 / 0.06), transparent 50%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
+ * Mobile swipe rows: on phones a card grid becomes a horizontal, snap-scrolling
+ * row with the next card peeking in. Unlayered so it overrides Tailwind's `grid`.
+ */
+@media (max-width: 639px) {
+  .swipe-row {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1rem;
+    margin-inline: -1rem;
+    padding: 6px 1rem 0.75rem;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .swipe-row::-webkit-scrollbar {
+    display: none;
+  }
+  .swipe-row > * {
+    flex: 0 0 84%;
+    scroll-snap-align: start;
+  }
+
+  /* Weekly programme: show one day at a time once the tabs script has run */
+  .week[data-tabs] .week-day:not([data-active]) {
+    display: none;
+  }
+}
+
+/* Leave room for the fixed mobile action bar */
+@media (max-width: 1023px) {
+  body.has-mobile-bar {
+    padding-bottom: calc(4.25rem + env(safe-area-inset-bottom));
+  }
+}

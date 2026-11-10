@@ -1,0 +1,19 @@
+---
+/**
+ * Email link that is assembled in the browser, so the plain address never
+ * appears in the HTML. Basic spam-bot deterrent, but still one click for people.
+ */
+import { club } from '../data/club';
+interface Props { class?: string }
+const [user, domain] = club.email.split('@');
+---
+<a class:list={['js-email', Astro.props.class]} data-u={user.split('').reverse().join('')} data-d={domain.split('').reverse().join('')} href="#"><slot /><span class="js-email-text">{user} [at] {domain}</span></a>
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('.js-email').forEach((a) => {
+    const rev = (s = '') => s.split('').reverse().join('');
+    const addr = `${rev(a.dataset.u)}@${rev(a.dataset.d)}`;
+    a.href = `mailto:${addr}`;
+    const t = a.querySelector('.js-email-text');
+    if (t) t.textContent = addr;
+  });
+</script>
