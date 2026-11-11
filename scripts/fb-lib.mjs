@@ -19,8 +19,27 @@ if (existsSync(envPath)) {
   }
 }
 
+/**
+ * Clean up a pasted token: strips whitespace/line breaks, surrounding quotes
+ * and a trailing comma (easy to pick up when copying from the Graph API Explorer).
+ */
+function cleanToken(raw) {
+  if (!raw) return raw;
+  return raw.replace(/\s+/g, '').replace(/,$/, '').replace(/^["']+|["']+$/g, '');
+}
+
+const rawToken = process.env.FB_PAGE_TOKEN;
+const cleaned = cleanToken(rawToken);
+if (rawToken && cleaned !== rawToken) {
+  console.log('[facebook] note: removed extra spaces/quotes/comma from FB_PAGE_TOKEN');
+}
+if (cleaned) {
+  // Safe diagnostics only (never print the token itself)
+  console.log(`[facebook] token looks like: starts "${cleaned.slice(0, 3)}…", ${cleaned.length} characters`);
+}
+
 export const config = {
-  token: process.env.FB_PAGE_TOKEN,
+  token: cleaned,
   pageId: process.env.FB_PAGE_ID || 'me',
   version: process.env.FB_GRAPH_VERSION || 'v23.0',
   limit: Number(process.env.FB_POST_LIMIT || 24),
