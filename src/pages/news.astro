@@ -19,8 +19,8 @@ const posts = getFacebookPosts();
 
   <section class="container-site py-16">
     {posts.length > 0 ? (
-      <div class="gap-6 sm:columns-2 lg:columns-3">
-        {posts.map((p) => <FacebookPost post={p} clamp={false} />)}
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((p) => <FacebookPost post={p} lines={6} />)}
       </div>
     ) : (
       <div class="framed mx-auto flex max-w-xl flex-col items-center gap-4 p-10 text-center">

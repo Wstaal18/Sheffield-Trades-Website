@@ -152,10 +152,11 @@ const eventSchema = upcoming.map((e) => ({
     </div>
     {posts.length > 0 ? (
       <>
-        <div class="mt-10 gap-6 sm:columns-2 lg:columns-3">
-          {posts.map((p, i) => (i < 2 ? <FacebookPost post={p} /> : <div class="hidden sm:block"><FacebookPost post={p} /></div>))}
+        <div class="swipe-row mt-8 grid gap-6 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((p, i) => <div class:list={[i === 2 && 'sm:max-lg:hidden']}><FacebookPost post={p} lines={4} /></div>)}
         </div>
-        <div class="mt-4 text-center">
+        <SwipeHint />
+        <div class="mt-8 text-center">
           <a href="/news/" class="btn btn-banner">More club news</a>
         </div>
       </>
