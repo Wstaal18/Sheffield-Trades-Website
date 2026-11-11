@@ -1,12 +1,51 @@
 ---
+/**
+ * Club News: the club's Facebook posts, presented magazine-style.
+ *  1. The newest post as a large featured spread
+ *  2. Everything else in a "bento" mosaic of varied tile sizes
+ *  3. Click any post to open a reader pop-up (← → to browse, Esc to close)
+ * Works without JavaScript too: tiles simply link to the post on Facebook.
+ */
+import { Image, getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
-import FacebookPost from '../components/FacebookPost.astro';
 import Icon from '../components/Icon.astro';
 import { club } from '../data/club';
-import { getFacebookPosts } from '../lib/content';
+import { getFacebookPosts, fbImage, postDate } from '../lib/content';
 
 const posts = getFacebookPosts();
+const [featured, ...rest] = posts;
+
+// Full-size images for the reader pop-up
+const reader = await Promise.all(
+  posts.map(async (p) => {
+    const img = fbImage(p.image);
+    const large = img ? await getImage({ src: img, width: 1200 }) : null;
+    return { message: p.message, date: postDate(p.createdTime), iso: p.createdTime, link: p.permalink, img: large?.src ?? null };
+  }),
+);
+// Safe to embed in a <script> tag
+const readerJson = JSON.stringify(reader).replace(/</g, '\\u003c');
+
+/**
+ * Tile sizes repeat in a pattern so the mosaic looks designed rather than random.
+ * Text-only posts never get the tall/big shapes (they'd look empty).
+ */
+const pattern = ['big', 'sm', 'sm', 'tall', 'sm', 'wide', 'sm', 'tall', 'sm', 'sm', 'wide', 'sm'] as const;
+type Size = (typeof pattern)[number];
+const sizeClass: Record<Size, string> = {
+  big: 'col-span-2 row-span-2',
+  tall: 'row-span-2',
+  wide: 'col-span-2',
+  sm: '',
+};
+const tiles = rest.map((p, i) => {
+  const img = fbImage(p.image);
+  let size: Size = pattern[i % pattern.length];
+  if (!img && (size === 'big' || size === 'tall')) size = 'wide';
+  return { post: p, img, size, index: i + 1 };
+});
+const textStyles = ['bg-banner-800 text-parchment', 'bg-soot text-parchment', 'bg-brass-400 text-soot'];
 ---
 <Layout title="Club News" description="The latest news, entertainment and offers from Sheffield Trades & Labour Club, straight from our Facebook page.">
   <PageHero
@@ -14,20 +53,280 @@ const posts = getFacebookPosts();
     title="Latest from the club"
     intro="Straight from our Facebook page and updated automatically throughout the day."
   >
-    <a href={club.facebook} target="_blank" rel="noopener" class="btn btn-brass mt-8"><Icon name="facebook" size={18} /> Follow us on Facebook</a>
+    <div class="mt-8 flex flex-wrap items-center gap-4">
+      <a href={club.facebook} target="_blank" rel="noopener" class="btn btn-brass"><Icon name="facebook" size={18} /> Follow us on Facebook</a>
+      {posts.length > 0 && <span class="text-sm text-parchment/70">{posts.length} recent posts</span>}
+    </div>
   </PageHero>
 
-  <section class="container-site py-16">
-    {posts.length > 0 ? (
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {posts.map((p) => <FacebookPost post={p} lines={6} />)}
-      </div>
-    ) : (
+  {featured ? (
+    <>
+      <!-- 1. Featured: the newest post -->
+      <section class="border-b border-soot/10 bg-parchment-dark">
+        <div class="container-site py-10 md:py-16">
+          <article class="news-reveal grid overflow-hidden bg-white shadow-xl lg:grid-cols-[1.25fr_1fr]">
+            <a href={featured.permalink} target="_blank" rel="noopener" data-open="0" class="group relative block aspect-[4/3] overflow-hidden bg-soot lg:aspect-auto lg:min-h-[30rem]">
+              {fbImage(featured.image) ? (
+                <>
+                  <Image src={fbImage(featured.image)!} alt="" width={200} class="absolute inset-0 size-full scale-110 object-cover opacity-50 blur-2xl" />
+                  <Image src={fbImage(featured.image)!} alt="" width={1100} widths={[500, 800, 1100]} sizes="(min-width: 1024px) 640px, 100vw" loading="eager" class="relative size-full object-contain transition-transform duration-700 group-hover:scale-[1.03]" />
+                </>
+              ) : (
+                <div class="grain flex size-full items-center justify-center bg-banner-800 p-10">
+                  <span class="font-display text-[9rem] leading-none text-brass-400/80">“</span>
+                </div>
+              )}
+              <span class="absolute top-4 left-4 flex items-center gap-2 bg-brass-400 px-3 py-1.5 font-display text-xs font-semibold tracking-[0.2em] text-soot uppercase shadow-lg">
+                <span class="relative flex size-2"><span class="absolute inline-flex size-full animate-ping rounded-full bg-banner-700 opacity-75"></span><span class="relative inline-flex size-2 rounded-full bg-banner-700"></span></span>
+                Latest post
+              </span>
+            </a>
+
+            <div class="flex flex-col p-6 sm:p-8 lg:p-10">
+              <p class="flex flex-wrap items-center gap-x-2 text-xs font-bold tracking-[0.2em] text-banner-700 uppercase">
+                <Icon name="facebook" size={14} />
+                <time datetime={featured.createdTime}>{postDate(featured.createdTime)}</time>
+                <span class="rel-time font-medium tracking-normal text-soot/50 normal-case" data-time={featured.createdTime}></span>
+              </p>
+              <p class="mt-4 line-clamp-[12] text-lg leading-relaxed whitespace-pre-line text-soot/90 lg:text-xl">{featured.message}</p>
+              <div class="mt-auto flex flex-wrap gap-3 pt-8">
+                <button type="button" data-open="0" class="btn btn-banner js-only hidden">Read full post</button>
+                <a href={featured.permalink} target="_blank" rel="noopener" class="btn border-2 border-soot/20 hover:border-soot">
+                  View on Facebook <Icon name="external" size={16} />
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 2. Bento mosaic of everything else -->
+      {tiles.length > 0 && (
+        <section class="container-site py-12 md:py-20">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="ribbon ml-3">More from the club</p>
+              <h2 class="mt-4 text-3xl md:text-5xl">Recent posts</h2>
+            </div>
+            <p class="text-sm text-soot/60">Tap any post to read it in full</p>
+          </div>
+
+          <div class="mt-8 grid grid-flow-dense auto-rows-[11rem] grid-cols-2 gap-3 sm:auto-rows-[13rem] sm:gap-4 lg:auto-rows-[14rem] lg:grid-cols-4">
+            {tiles.map(({ post, img, size, index }) => (
+              <a
+                href={post.permalink}
+                target="_blank"
+                rel="noopener"
+                data-open={index}
+                style={`--d:${(index % 4) * 70}ms`}
+                class:list={['news-reveal group relative isolate flex flex-col overflow-hidden shadow-md transition-shadow hover:shadow-2xl focus-visible:ring-4 focus-visible:ring-brass-400', sizeClass[size], !img && textStyles[index % textStyles.length]]}
+              >
+                {img ? (
+                  <>
+                    <Image
+                      src={img}
+                      alt=""
+                      width={size === 'big' ? 900 : 600}
+                      widths={size === 'big' ? [450, 900] : [300, 600]}
+                      sizes={size === 'big' || size === 'wide' ? '(min-width: 1024px) 560px, 100vw' : '(min-width: 1024px) 280px, 50vw'}
+                      class="absolute inset-0 -z-10 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                    />
+                    <span class="absolute inset-0 -z-10 bg-gradient-to-t from-soot via-soot/40 to-transparent opacity-90 transition-opacity group-hover:opacity-100"></span>
+                    <div class="mt-auto p-3 text-parchment sm:p-4">
+                      <p class="text-[0.65rem] font-bold tracking-[0.18em] text-brass-300 uppercase">{postDate(post.createdTime)}</p>
+                      {post.message && (
+                        <p class:list={['mt-1 leading-snug', size === 'big' ? 'line-clamp-4 text-base sm:text-lg' : 'line-clamp-2 text-xs sm:text-sm']}>{post.message}</p>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div class="flex h-full flex-col p-4 sm:p-5">
+                    <span class="font-display text-5xl leading-[0.6] opacity-60" aria-hidden="true">“</span>
+                    <p class:list={['mt-3 font-medium leading-snug', size === 'wide' ? 'line-clamp-4 text-sm sm:text-lg' : 'line-clamp-5 text-xs sm:text-sm']}>{post.message}</p>
+                    <p class="mt-auto pt-2 text-[0.65rem] font-bold tracking-[0.18em] uppercase opacity-70">{postDate(post.createdTime)}</p>
+                  </div>
+                )}
+                <span class="absolute top-3 right-3 flex size-8 translate-y-1 items-center justify-center rounded-full bg-parchment/90 text-soot opacity-0 shadow transition-all group-hover:translate-y-0 group-hover:opacity-100" aria-hidden="true">
+                  <Icon name="arrow" size={16} />
+                </span>
+              </a>
+            ))}
+            <!-- End tile: fills any gap left in the last row -->
+            <a
+              href={club.facebook}
+              target="_blank"
+              rel="noopener"
+              class="news-reveal group grain flex flex-col items-start justify-between bg-banner-800 p-4 text-parchment shadow-md transition-shadow hover:shadow-2xl sm:p-5"
+            >
+              <Icon name="facebook" size={30} class="text-brass-300 transition-transform group-hover:scale-110" />
+              <span>
+                <span class="block font-display text-xl leading-tight tracking-wide uppercase sm:text-2xl">See more on Facebook</span>
+                <span class="mt-1 flex items-center gap-1 text-xs text-parchment/70">Every post, photo &amp; comment <Icon name="arrow" size={12} class="transition-transform group-hover:translate-x-1" /></span>
+              </span>
+            </a>
+          </div>
+        </section>
+      )}
+
+      <!-- 3. Follow CTA -->
+      <section class="grain bg-banner-800 text-parchment">
+        <div class="container-site flex flex-col items-start justify-between gap-6 py-12 md:flex-row md:items-center">
+          <div>
+            <h2 class="text-3xl md:text-4xl">Never miss a night</h2>
+            <p class="mt-2 text-parchment/80">Live acts, bingo jackpots and one-off events are posted on Facebook first.</p>
+          </div>
+          <a href={club.facebook} target="_blank" rel="noopener" class="btn btn-brass shrink-0"><Icon name="facebook" size={18} /> Follow us on Facebook</a>
+        </div>
+      </section>
+
+      <!-- Reader pop-up -->
+      <dialog id="news-reader" aria-label="Club news post" class="m-auto w-full max-w-5xl bg-transparent p-0 backdrop:bg-soot/85 backdrop:backdrop-blur-sm">
+        <div class="relative grid max-h-[92dvh] grid-rows-[auto_minmax(0,1fr)] overflow-hidden bg-white shadow-2xl md:grid-cols-[1.2fr_1fr] md:grid-rows-1">
+          <div class="reader-media relative flex min-h-56 items-center justify-center overflow-hidden bg-soot md:min-h-[32rem]">
+            <img class="reader-bg absolute inset-0 size-full scale-110 object-cover opacity-50 blur-2xl" alt="" />
+            <img class="reader-img relative max-h-[45dvh] w-full object-contain md:max-h-[92dvh]" alt="" />
+            <span class="reader-quote hidden font-display text-[8rem] leading-none text-brass-400/80">“</span>
+          </div>
+          <div class="flex min-h-0 flex-col overflow-y-auto p-6 sm:p-8">
+            <p class="flex flex-wrap items-center gap-2 text-xs font-bold tracking-[0.2em] text-banner-700 uppercase">
+              <Icon name="facebook" size={14} /> <span class="reader-date"></span>
+              <span class="reader-rel font-medium tracking-normal text-soot/50 normal-case"></span>
+            </p>
+            <p class="reader-text mt-4 leading-relaxed whitespace-pre-line text-soot/90"></p>
+            <div class="mt-auto flex flex-wrap items-center gap-3 pt-6">
+              <a class="reader-link btn btn-banner py-2.5 text-sm" target="_blank" rel="noopener">View on Facebook <Icon name="external" size={14} /></a>
+              <span class="reader-count ml-auto text-xs text-soot/50"></span>
+            </div>
+          </div>
+
+          <button type="button" class="reader-close absolute top-3 right-3 flex size-10 items-center justify-center rounded-full bg-soot/70 text-parchment backdrop-blur hover:bg-soot" aria-label="Close">
+            <Icon name="close" size={20} />
+          </button>
+          <button type="button" class="reader-prev absolute top-1/2 left-3 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-parchment/90 text-soot shadow-lg hover:bg-white md:flex" aria-label="Newer post">
+            <Icon name="arrow" size={20} class="rotate-180" />
+          </button>
+          <button type="button" class="reader-next absolute top-1/2 right-3 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-parchment/90 text-soot shadow-lg hover:bg-white md:flex" aria-label="Older post">
+            <Icon name="arrow" size={20} />
+          </button>
+        </div>
+      </dialog>
+      <script type="application/json" id="news-data" set:html={readerJson} />
+    </>
+  ) : (
+    <section class="container-site py-16">
       <div class="framed mx-auto flex max-w-xl flex-col items-center gap-4 p-10 text-center">
         <Icon name="facebook" size={36} class="text-banner-700" />
         <p class="text-soot/80">News is loading from Facebook. In the meantime, you can see all our posts on our Facebook page.</p>
         <a href={club.facebook} target="_blank" rel="noopener" class="btn btn-banner">Open Facebook</a>
       </div>
-    )}
-  </section>
+    </section>
+  )}
 </Layout>
+
+<style>
+  /* Scroll-reveal: only hidden once the script confirms it can reveal them */
+  :global(.news-animate) .news-reveal {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+    transition:
+      opacity 0.6s ease var(--d, 0ms),
+      transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms),
+      box-shadow 0.3s ease;
+  }
+  :global(.news-animate) .news-reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+  dialog[open] {
+    animation: reader-in 0.25s ease-out;
+  }
+  @keyframes reader-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.news-animate) .news-reveal { opacity: 1; transform: none; }
+  }
+</style>
+
+<script>
+  type Post = { message: string; date: string; iso: string; link: string; img: string | null };
+  const dataEl = document.getElementById('news-data');
+  const posts: Post[] = dataEl ? JSON.parse(dataEl.textContent || '[]') : [];
+
+  // "2 days ago" style times, worked out in the browser so they're always current
+  const rel = (iso: string) => {
+    const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if (mins < 60) return mins <= 1 ? '· just now' : `· ${mins} minutes ago`;
+    const hrs = Math.round(mins / 60);
+    if (hrs < 24) return `· ${hrs} hour${hrs === 1 ? '' : 's'} ago`;
+    const days = Math.round(hrs / 24);
+    if (days < 7) return `· ${days === 1 ? 'yesterday' : `${days} days ago`}`;
+    return '';
+  };
+  document.querySelectorAll<HTMLElement>('.rel-time').forEach((el) => (el.textContent = rel(el.dataset.time!)));
+
+  // Scroll-reveal
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.documentElement.classList.add('news-animate');
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }),
+      { rootMargin: '0px 0px -8% 0px' },
+    );
+    document.querySelectorAll('.news-reveal').forEach((el) => io.observe(el));
+  }
+
+  // Reader pop-up
+  const dialog = document.getElementById('news-reader') as HTMLDialogElement | null;
+  if (dialog && posts.length && typeof dialog.showModal === 'function') {
+    document.querySelectorAll('.js-only').forEach((el) => el.classList.remove('hidden'));
+    const $ = <T extends Element>(sel: string) => dialog.querySelector(sel) as T;
+    const img = $<HTMLImageElement>('.reader-img');
+    const bg = $<HTMLImageElement>('.reader-bg');
+    const quote = $<HTMLElement>('.reader-quote');
+    let current = 0;
+
+    const show = (i: number) => {
+      current = (i + posts.length) % posts.length;
+      const p = posts[current];
+      if (p.img) {
+        img.src = bg.src = p.img;
+        img.hidden = bg.hidden = false;
+        quote.classList.add('hidden');
+      } else {
+        img.hidden = bg.hidden = true;
+        img.removeAttribute('src');
+        quote.classList.remove('hidden');
+      }
+      $<HTMLElement>('.reader-date').textContent = p.date;
+      $<HTMLElement>('.reader-rel').textContent = rel(p.iso);
+      $<HTMLElement>('.reader-text').textContent = p.message;
+      $<HTMLAnchorElement>('.reader-link').href = p.link;
+      $<HTMLElement>('.reader-count').textContent = `${current + 1} of ${posts.length}`;
+      $<HTMLElement>('.reader-text').parentElement!.scrollTop = 0;
+    };
+
+    document.querySelectorAll<HTMLElement>('[data-open]').forEach((el) =>
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        show(Number(el.dataset.open));
+        dialog.showModal();
+      }),
+    );
+    $('.reader-close').addEventListener('click', () => dialog.close());
+    $('.reader-prev').addEventListener('click', () => show(current - 1));
+    $('.reader-next').addEventListener('click', () => show(current + 1));
+    // Click on the dark backdrop closes it
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') show(current + 1);
+      if (e.key === 'ArrowLeft') show(current - 1);
+    });
+    // Swipe left/right on phones
+    let startX = 0;
+    dialog.addEventListener('touchstart', (e) => (startX = e.touches[0].clientX), { passive: true });
+    dialog.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 60) show(current + (dx < 0 ? 1 : -1));
+    });
+  }
+</script>
