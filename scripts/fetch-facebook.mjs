@@ -5,9 +5,11 @@
  *   - src/data/facebook.json   post text, dates, links
  *   - src/assets/fb/<id>.<ext> post images (downloaded, because Facebook's
  *                              image URLs expire; Astro then optimises them)
+ *   - public/fb-version.txt    fingerprint of the feed, published with the site
+ *                              so the GitHub check can tell when posts change
  *
- * Env vars:
- *   FB_PAGE_TOKEN     required for a live fetch: a long-lived *Page* access token
+ * Env vars (see scripts/fb-lib.mjs):
+ *   FB_PAGE_TOKEN     required for a live fetch: a never-expiring *Page* access token
  *   FB_PAGE_ID        optional, defaults to "me" (the Page the token belongs to)
  *   FB_GRAPH_VERSION  optional, defaults to v23.0
  *   FB_POST_LIMIT     optional, defaults to 24
@@ -15,72 +17,43 @@
  * Behaviour:
  *   - No token: keeps any existing data (or writes an empty feed) and exits 0,
  *     so local development works without credentials.
- *   - Token set but the fetch fails: exits 1. In CI this stops the deploy,
- *     so the live site keeps its last good feed instead of going blank.
+ *   - Token set but the fetch fails: exits 1. On Netlify this fails the build,
+ *     so the live site keeps its last good version instead of going blank.
  */
 import { mkdir, readdir, rm, writeFile, access } from 'node:fs/promises';
-import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { root, config, fetchPosts, fingerprint } from './fb-lib.mjs';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dataFile = path.join(root, 'src/data/facebook.json');
 const imageDir = path.join(root, 'src/assets/fb');
-
-// Load .env for local runs (no dependency needed)
-const envPath = path.join(root, '.env');
-if (existsSync(envPath)) {
-  for (const line of readFileSync(envPath, 'utf8').split(/\r?\n/)) {
-    const m = line.match(/^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*?)\s*$/);
-    if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
-  }
-}
-
-const token = process.env.FB_PAGE_TOKEN;
-const pageId = process.env.FB_PAGE_ID || 'me';
-const version = process.env.FB_GRAPH_VERSION || 'v23.0';
-const limit = Number(process.env.FB_POST_LIMIT || 24);
+const versionFile = path.join(root, 'public/fb-version.txt');
 
 async function exists(p) {
   try { await access(p); return true; } catch { return false; }
-}
-
-async function ensureEmptyFeed() {
-  await mkdir(path.dirname(dataFile), { recursive: true });
-  await mkdir(imageDir, { recursive: true });
-  if (!(await exists(dataFile))) {
-    await writeFile(dataFile, JSON.stringify({ fetchedAt: null, posts: [] }, null, 2));
-    console.log('[facebook] wrote empty feed');
-  }
 }
 
 const extFor = (contentType) =>
   ({ 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' })[contentType?.split(';')[0]] ?? 'jpg';
 
 async function main() {
-  if (!token) {
+  await mkdir(path.dirname(dataFile), { recursive: true });
+  await mkdir(imageDir, { recursive: true });
+
+  if (!config.token) {
     console.log('[facebook] FB_PAGE_TOKEN not set, skipping live fetch');
-    await ensureEmptyFeed();
+    if (!(await exists(dataFile))) {
+      await writeFile(dataFile, JSON.stringify({ fetchedAt: null, posts: [] }, null, 2));
+      console.log('[facebook] wrote empty feed');
+    }
+    await writeFile(versionFile, 'none\n');
     return;
   }
 
-  const fields = 'id,message,created_time,permalink_url,full_picture,status_type';
-  const url = `https://graph.facebook.com/${version}/${pageId}/posts?fields=${fields}&limit=${limit}&access_token=${encodeURIComponent(token)}`;
-  const res = await fetch(url);
-  const body = await res.json();
-  if (!res.ok || body.error) {
-    const err = body.error ?? {};
-    throw new Error(`Graph API error ${res.status}: ${err.message ?? 'unknown'} (code ${err.code ?? '?'}, type ${err.type ?? '?'})`);
-  }
-
-  await mkdir(imageDir, { recursive: true });
+  const raw = await fetchPosts();
   const posts = [];
   const keep = new Set(['.gitkeep']);
 
-  for (const p of body.data ?? []) {
-    const message = (p.message ?? '').trim();
-    if (!message && !p.full_picture) continue; // skip empty shares / profile updates
-
+  for (const p of raw) {
     let image = null;
     if (p.full_picture) {
       try {
@@ -95,10 +68,9 @@ async function main() {
         console.warn(`[facebook] image download failed for ${p.id}: ${e.message}`);
       }
     }
-
     posts.push({
       id: p.id,
-      message,
+      message: (p.message ?? '').trim(),
       createdTime: p.created_time,
       permalink: p.permalink_url,
       image,
@@ -111,10 +83,11 @@ async function main() {
   }
 
   await writeFile(dataFile, JSON.stringify({ fetchedAt: new Date().toISOString(), posts }, null, 2));
+  await writeFile(versionFile, `${fingerprint(raw)}\n`);
   console.log(`[facebook] saved ${posts.length} posts (${posts.filter((p) => p.image).length} with images)`);
 }
 
-main().catch(async (e) => {
+main().catch((e) => {
   console.error(`[facebook] ${e.message}`);
   process.exit(1);
 });

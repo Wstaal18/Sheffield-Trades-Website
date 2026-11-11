@@ -5,3 +5,4 @@ dist/
 src/data/facebook.json
 src/assets/fb/*
 !src/assets/fb/.gitkeep
+public/fb-version.txt

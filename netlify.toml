@@ -1,0 +1,20 @@
+# Netlify build settings (these override anything set in the Netlify dashboard)
+[build]
+  command = "npm run build"   # fetches Facebook posts, then builds the site
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # FB_PAGE_TOKEN is set in Netlify: Site configuration → Environment variables
+
+# Long-cache Astro's fingerprinted assets (file names change when content does)
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Never cache the feed fingerprint (checked by the GitHub "Facebook refresh" job)
+[[headers]]
+  for = "/fb-version.txt"
+  [headers.values]
+    Cache-Control = "no-store"

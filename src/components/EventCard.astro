@@ -11,8 +11,12 @@ const fmt = (opts: Intl.DateTimeFormatOptions) => (d: Date) => new Intl.DateTime
 // The tag on the image: "Sat 14 Nov" for one-offs, "Every Saturday" for recurring
 const tag = data.date ? fmt({ weekday: 'short', day: 'numeric', month: 'short' })(data.date) : data.recurring;
 const kind = data.date ? 'One-off event' : 'Regular';
+// Last day the event should be shown (UK date), so the browser can hide it afterwards
+const expires = data.date
+  ? new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/London' }).format(data.endDate ?? data.date)
+  : undefined;
 ---
-<article class="framed group flex h-full flex-col overflow-hidden">
+<article class="event-card framed group flex h-full flex-col overflow-hidden" data-expires={expires}>
   <div class="relative aspect-[4/3] shrink-0 overflow-hidden bg-soot">
     {data.image ? (
       <Image
@@ -50,3 +54,16 @@ const kind = data.date ? 'One-off event' : 'Regular';
     </dl>
   </div>
 </article>
+
+<script>
+  // The site is only rebuilt when Facebook changes, so hide one-off events
+  // whose date has passed (UK time) right here in the browser.
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/London' }).format(new Date());
+  document.querySelectorAll<HTMLElement>('.event-card[data-expires]').forEach((card) => {
+    if (card.dataset.expires! < today) card.remove();
+  });
+  // Hide any "Coming up" group left with no events
+  document.querySelectorAll<HTMLElement>('[data-upcoming-group]').forEach((group) => {
+    if (!group.querySelector('.event-card')) group.remove();
+  });
+</script>

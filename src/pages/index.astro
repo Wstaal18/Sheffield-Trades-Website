@@ -85,14 +85,14 @@ const eventSchema = upcoming.map((e) => ({
       </div>
 
       {upcoming.length > 0 && (
-        <>
+        <div data-upcoming-group>
           <h3 class="mt-10 text-sm tracking-[0.2em] text-soot/60">Coming up</h3>
           <div class="swipe-row mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {upcoming.map((e) => <EventCard event={e} />)}
           </div>
           {upcoming.length > 1 && <SwipeHint />}
           <h3 class="mt-12 text-sm tracking-[0.2em] text-soot/60">Every week</h3>
-        </>
+        </div>
       )}
       <div class:list={['swipe-row grid gap-6 sm:grid-cols-2 lg:grid-cols-3', upcoming.length > 0 ? 'mt-4' : 'mt-8 sm:mt-10']}>
         {recurring.map((e) => <EventCard event={e} />)}

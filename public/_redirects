@@ -1,0 +1,3 @@
+# Old URLs from the previous site → new pages (permanent redirects)
+/booking.html           /book/  301
+/booking-success.html   /book/  301

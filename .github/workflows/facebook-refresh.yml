@@ -1,0 +1,33 @@
+name: Facebook refresh
+
+# Every 3 hours, check the club's Facebook Page. If there are new or edited
+# posts, trigger a Netlify rebuild so they appear on the website.
+# If nothing has changed, no Netlify build is used.
+
+on:
+  schedule:
+    - cron: '20 */3 * * *'   # times are UTC
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Rebuild the site even if Facebook has not changed'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check Facebook & trigger Netlify build if needed
+        run: node scripts/fb-check.mjs
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+          FORCE_REBUILD: ${{ inputs.force }}
