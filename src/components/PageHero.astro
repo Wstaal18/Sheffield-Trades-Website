@@ -1,12 +1,12 @@
 ---
-interface Props { eyebrow: string; title: string; intro?: string }
-const { eyebrow, title, intro } = Astro.props;
+interface Props { eyebrow: string; title: string; intro?: string; compact?: boolean }
+const { eyebrow, title, intro, compact = false } = Astro.props;
 ---
 <section class="grain bg-banner-800 text-parchment">
-  <div class="container-site py-14 md:py-20">
+  <div class:list={['container-site', compact ? 'py-8 md:py-10' : 'py-14 md:py-20']}>
     <p class="ribbon ml-3">{eyebrow}</p>
-    <h1 class="mt-5 max-w-3xl text-4xl leading-[1.05] font-semibold md:text-6xl">{title}</h1>
-    {intro && <p class="mt-4 max-w-2xl text-lg text-parchment/80">{intro}</p>}
+    <h1 class:list={['max-w-3xl leading-[1.05] font-semibold', compact ? 'mt-4 text-3xl md:text-5xl' : 'mt-5 text-4xl md:text-6xl']}>{title}</h1>
+    {intro && <p class:list={['max-w-2xl text-parchment/80', compact ? 'mt-2 text-base' : 'mt-4 text-lg']}>{intro}</p>}
     <slot />
   </div>
 </section>

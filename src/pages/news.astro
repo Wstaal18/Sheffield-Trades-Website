@@ -8,7 +8,6 @@
  */
 import { Image, getImage } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
 import { club } from '../data/club';
 import { getFacebookPosts, fbImage, postDate } from '../lib/content';
@@ -48,24 +47,27 @@ const tiles = rest.map((p, i) => {
 const textStyles = ['bg-banner-800 text-parchment', 'bg-soot text-parchment', 'bg-brass-400 text-soot'];
 ---
 <Layout title="Club News" description="The latest news, entertainment and offers from Sheffield Trades & Labour Club, straight from our Facebook page.">
-  <PageHero
-    eyebrow="Club news"
-    title="Latest from the club"
-    intro="Straight from our Facebook page and updated automatically throughout the day."
-  >
-    <div class="mt-8 flex flex-wrap items-center gap-4">
-      <a href={club.facebook} target="_blank" rel="noopener" class="btn btn-brass"><Icon name="facebook" size={18} /> Follow us on Facebook</a>
-      {posts.length > 0 && <span class="text-sm text-parchment/70">{posts.length} recent posts</span>}
+  <!-- Slim banner so the latest post fits on screen without scrolling -->
+  <section class="grain bg-banner-800 text-parchment">
+    <div class="container-site flex flex-wrap items-end justify-between gap-x-6 gap-y-4 py-6 md:py-7">
+      <div>
+        <p class="ribbon ml-3">Club news</p>
+        <h1 class="mt-3 text-3xl leading-none font-semibold md:text-5xl">Latest from the club</h1>
+        <p class="mt-2 hidden text-sm text-parchment/75 sm:block">
+          Straight from our Facebook page, updated automatically{posts.length > 0 && ` · ${posts.length} recent posts`}
+        </p>
+      </div>
+      <a href={club.facebook} target="_blank" rel="noopener" class="btn btn-brass px-4 py-2.5 text-sm"><Icon name="facebook" size={16} /> Follow us on Facebook</a>
     </div>
-  </PageHero>
+  </section>
 
   {featured ? (
     <>
       <!-- 1. Featured: the newest post -->
       <section class="border-b border-soot/10 bg-parchment-dark">
-        <div class="container-site py-10 md:py-16">
-          <article class="news-reveal grid overflow-hidden bg-white shadow-xl lg:grid-cols-[1.25fr_1fr]">
-            <a href={featured.permalink} target="_blank" rel="noopener" data-open="0" class="group relative block aspect-[4/3] overflow-hidden bg-soot lg:aspect-auto lg:min-h-[30rem]">
+        <div class="container-site py-5 md:py-8">
+          <article class="news-reveal grid overflow-hidden bg-white shadow-xl lg:h-[clamp(22rem,calc(100dvh-19rem),34rem)] lg:grid-cols-[1.25fr_1fr]">
+            <a href={featured.permalink} target="_blank" rel="noopener" data-open="0" class="group relative block aspect-[16/10] max-h-[36dvh] w-full overflow-hidden bg-soot lg:aspect-auto lg:h-full lg:max-h-none">
               {fbImage(featured.image) ? (
                 <>
                   <Image src={fbImage(featured.image)!} alt="" width={200} class="absolute inset-0 size-full scale-110 object-cover opacity-50 blur-2xl" />
@@ -82,17 +84,17 @@ const textStyles = ['bg-banner-800 text-parchment', 'bg-soot text-parchment', 'b
               </span>
             </a>
 
-            <div class="flex flex-col p-6 sm:p-8 lg:p-10">
+            <div class="flex min-h-0 flex-col p-5 sm:p-7 lg:p-8">
               <p class="flex flex-wrap items-center gap-x-2 text-xs font-bold tracking-[0.2em] text-banner-700 uppercase">
                 <Icon name="facebook" size={14} />
                 <time datetime={featured.createdTime}>{postDate(featured.createdTime)}</time>
                 <span class="rel-time font-medium tracking-normal text-soot/50 normal-case" data-time={featured.createdTime}></span>
               </p>
-              <p class="mt-4 line-clamp-[12] text-lg leading-relaxed whitespace-pre-line text-soot/90 lg:text-xl">{featured.message}</p>
-              <div class="mt-auto flex flex-wrap gap-3 pt-8">
-                <button type="button" data-open="0" class="btn btn-banner js-only hidden">Read full post</button>
-                <a href={featured.permalink} target="_blank" rel="noopener" class="btn border-2 border-soot/20 hover:border-soot">
-                  View on Facebook <Icon name="external" size={16} />
+              <p class="mt-3 line-clamp-4 text-base leading-relaxed whitespace-pre-line text-soot/90 sm:line-clamp-5 sm:text-lg lg:line-clamp-[7]">{featured.message}</p>
+              <div class="mt-auto grid grid-cols-2 gap-2 pt-4 sm:flex sm:flex-wrap sm:gap-3 sm:pt-5">
+                <button type="button" data-open="0" class="btn btn-banner js-only hidden px-3 py-2.5 text-sm sm:px-6 sm:py-3 sm:text-base">Read full post</button>
+                <a href={featured.permalink} target="_blank" rel="noopener" class="btn border-2 border-soot/20 px-3 py-2.5 text-sm hover:border-soot sm:px-6 sm:py-3 sm:text-base">
+                  <span class="sm:hidden">Facebook</span><span class="hidden sm:inline">View on Facebook</span> <Icon name="external" size={14} />
                 </a>
               </div>
             </div>
