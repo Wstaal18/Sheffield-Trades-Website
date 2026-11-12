@@ -8,4 +8,5 @@ poster: live
 posterText: Live Music
 order: 1
 featured: true
+schedule: { days: [6], start: '19:00', end: '24:00' }
 ---

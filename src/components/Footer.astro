@@ -20,7 +20,11 @@ import { club, openingHours, formatSessions } from '../data/club';
       <div class="mt-5 flex gap-3">
         <a href={club.facebook} target="_blank" rel="noopener" class="rounded-full bg-soot-light p-2.5 hover:bg-brass-400 hover:text-soot" aria-label="Facebook"><Icon name="facebook" /></a>
         <a href={club.youtube} target="_blank" rel="noopener" class="rounded-full bg-soot-light p-2.5 hover:bg-brass-400 hover:text-soot" aria-label="YouTube"><Icon name="youtube" /></a>
+        <a href={club.mapsLink} target="_blank" rel="noopener" class="rounded-full bg-soot-light p-2.5 hover:bg-brass-400 hover:text-soot" aria-label="Google Maps"><Icon name="pin" /></a>
       </div>
+      <a href={club.reviewLink} target="_blank" rel="noopener" class="mt-4 inline-flex items-center gap-2 rounded-full bg-brass-400 px-4 py-2 text-sm font-semibold text-soot hover:bg-brass-300">
+        <Icon name="star" size={16} /> Leave us a Google review
+      </a>
     </div>
 
     <div>

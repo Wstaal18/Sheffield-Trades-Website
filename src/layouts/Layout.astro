@@ -12,39 +12,68 @@ interface Props {
   description?: string;
   /** Extra JSON-LD objects (e.g. Event schema) */
   schema?: object[];
+  /** Keep this page out of search results (e.g. 404) */
+  noindex?: boolean;
 }
 
 const {
   title,
-  description = `${club.name}: a members' club and community pub on Duke Street, Sheffield. Live entertainment, bingo, karaoke, cheap drinks and function room hire.`,
+  description = `Friendly members' social club on Duke Street, Sheffield S2 (est. 1981). Cheap pints, bingo, karaoke, live turns, Sky & TNT Sports, pool, darts, chess club, kids karate and function room hire for up to 120 guests.`,
   schema = [],
+  noindex = false,
 } = Astro.props;
 
-const fullTitle = title ? `${title} | ${club.name}` : `${club.name} | Community Club & Events, Sheffield`;
+const fullTitle = title ? `${title} | ${club.name}` : `${club.name} | Social Club, Bar & Events, Sheffield`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const showMobileBar = !Astro.url.pathname.startsWith('/book');
 const ogImage = await getImage({ src: heroImg, width: 1200, height: 630, format: 'jpg', fit: 'cover' });
 const ogImageUrl = new URL(ogImage.src, Astro.site);
 
 const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const siteUrl = Astro.site!.toString();
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${siteUrl}#website`,
+  url: siteUrl,
+  name: club.name,
+  alternateName: club.alternateNames,
+  inLanguage: 'en-GB',
+  publisher: { '@id': `${siteUrl}#club` },
+};
 const businessSchema = {
   '@context': 'https://schema.org',
-  '@type': 'BarOrPub',
+  '@type': ['BarOrPub', 'LocalBusiness'],
+  '@id': `${siteUrl}#club`,
   name: club.name,
-  url: Astro.site?.toString(),
+  alternateName: club.alternateNames,
+  description: club.summary,
+  disambiguatingDescription: club.disambiguation,
+  url: siteUrl,
+  logo: new URL('/favicon.png', Astro.site).toString(),
   image: ogImageUrl.toString(),
-  telephone: club.phone,
+  telephone: club.phoneHref.replace('tel:', ''),
   foundingDate: String(club.established),
+  priceRange: '£',
+  currenciesAccepted: 'GBP',
   address: {
     '@type': 'PostalAddress',
     streetAddress: club.address.street,
     addressLocality: club.address.city,
+    addressRegion: 'South Yorkshire',
     postalCode: club.address.postcode,
     addressCountry: club.address.country,
   },
   geo: { '@type': 'GeoCoordinates', latitude: club.geo.lat, longitude: club.geo.lng },
   hasMap: club.mapsLink,
-  sameAs: [club.facebook, club.youtube],
+  areaServed: ['Sheffield', 'Sheffield City Centre', 'Park Hill', 'Norfolk Park', 'South Yorkshire'],
+  amenityFeature: club.facilities.map((name) => ({ '@type': 'LocationFeatureSpecification', name, value: true })),
+  sameAs: [club.facebook, club.youtube, club.mapsLink, 'https://maps.app.goo.gl/NUuA2ZFtLFQV1nrG6'],
+  potentialAction: {
+    '@type': 'ReserveAction',
+    name: 'Request a function room booking',
+    target: { '@type': 'EntryPoint', urlTemplate: new URL('/book/', Astro.site).toString() },
+  },
   openingHoursSpecification: openingHours.flatMap((g) =>
     g.sessions.map(([opens, closes]) => ({
       '@type': 'OpeningHoursSpecification',
@@ -62,7 +91,11 @@ const businessSchema = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
     <link rel="canonical" href={canonical} />
+    <meta name="geo.region" content="GB-SHF" />
+    <meta name="geo.placename" content="Sheffield" />
+    <meta name="geo.position" content={`${club.geo.lat};${club.geo.lng}`} />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -74,10 +107,17 @@ const businessSchema = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`The bar at ${club.name}`} />
     <meta property="og:locale" content="en_GB" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="Club summary for AI assistants" />
 
-    <script type="application/ld+json" set:html={JSON.stringify([businessSchema, ...schema])} />
+    <script type="application/ld+json" set:html={JSON.stringify([websiteSchema, businessSchema, ...schema])} />
   </head>
   <body class:list={['flex min-h-dvh flex-col', showMobileBar && 'has-mobile-bar']}>
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-brass-400 focus:px-4 focus:py-2 focus:text-soot">Skip to content</a>

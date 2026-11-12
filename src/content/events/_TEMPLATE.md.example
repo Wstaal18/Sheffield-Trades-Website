@@ -3,6 +3,7 @@
 title: New Year's Eve Party
 date: 2026-12-31T19:00:00        # one-off event date & start time (remove for recurring events)
 # recurring: Every Thursday      # use this instead of `date` for recurring events
+# schedule: { days: [4], start: '19:00', end: '23:00' }   # recurring only: helps Google. Days 0=Sun…6=Sat; add monthWeek: -1 for "last … of the month"
 time: 7pm till late
 price: Free for members
 summary: One or two sentences about the event.

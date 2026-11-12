@@ -7,4 +7,5 @@ summary: Fun, confidence-building karate classes for kids aged 5–12.
 poster: karate
 posterText: Kids Karate
 order: 5
+schedule: { days: [1, 5], start: '18:00', end: '20:00' }
 ---

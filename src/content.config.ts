@@ -28,6 +28,19 @@ const events = defineCollection({
       /** Lower numbers show first among recurring events */
       order: z.number().default(50),
       featured: z.boolean().default(false),
+      /**
+       * Optional, for recurring events: tells Google & AI assistants exactly when it runs.
+       * days: 0 = Sunday … 6 = Saturday. start/end: 24h "HH:MM" ("24:00" = midnight).
+       * monthWeek: e.g. -1 = last week of the month, 2 = second week (leave out for weekly).
+       */
+      schedule: z
+        .object({
+          days: z.array(z.number().min(0).max(6)),
+          start: z.string(),
+          end: z.string().optional(),
+          monthWeek: z.number().optional(),
+        })
+        .optional(),
       hidden: z.boolean().default(false),
     }),
 });

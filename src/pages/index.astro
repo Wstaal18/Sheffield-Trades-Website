@@ -14,6 +14,7 @@ import SwipeHint from '../components/SwipeHint.astro';
 import hero from '../assets/images/club-hero.jpeg';
 import { club, openingHours, formatSessions } from '../data/club';
 import { getEvents, getFacebookPosts } from '../lib/content';
+import { faqs } from '../data/faq';
 
 const { upcoming, recurring } = await getEvents();
 const posts = getFacebookPosts(3);
@@ -42,8 +43,45 @@ const eventSchema = upcoming.map((e) => ({
   },
   organizer: { '@type': 'Organization', name: club.name, url: Astro.site?.toString() },
 }));
+
+// Recurring events (weekly club nights etc.), with their schedule so Google & AI assistants know when they run
+const clubId = `${Astro.site}#club`;
+const dayUrls = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((d) => `https://schema.org/${d}`);
+const fixTime = (t: string) => (t === '24:00' ? '00:00' : t);
+const recurringSchema = recurring
+  .filter((e) => e.data.schedule)
+  .map((e) => {
+    const sch = e.data.schedule!;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: `${e.data.title} at ${club.name}`,
+      description: [e.data.summary, e.data.recurring, e.data.time, e.data.price].filter(Boolean).join('. '),
+      ...(e.data.image && { image: new URL(e.data.image.src, Astro.site).toString() }),
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventSchedule: {
+        '@type': 'Schedule',
+        repeatFrequency: sch.monthWeek ? 'P1M' : 'P1W',
+        byDay: sch.days.length === 1 ? dayUrls[sch.days[0]] : sch.days.map((d) => dayUrls[d]),
+        ...(sch.monthWeek && { byMonthWeek: sch.monthWeek }),
+        startTime: fixTime(sch.start),
+        ...(sch.end && { endTime: fixTime(sch.end) }),
+        scheduleTimezone: 'Europe/London',
+      },
+      location: { '@id': clubId },
+      organizer: { '@id': clubId },
+    };
+  });
+
+// FAQ structured data, mirrors the visible FAQ section below
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
 ---
-<Layout schema={eventSchema}>
+<Layout schema={[...eventSchema, ...recurringSchema, faqSchema]}>
   <!-- Hero -->
   <section class="relative isolate overflow-hidden bg-soot text-parchment">
     <Image
@@ -183,6 +221,25 @@ const eventSchema = upcoming.map((e) => ({
       <div class="flex flex-col gap-3 md:items-end">
         <a href="/book/" class="btn btn-brass w-full md:w-auto">Request a booking <Icon name="arrow" size={18} /></a>
         <a href={club.phoneHref} class="btn btn-ghost w-full md:w-auto"><Icon name="phone" size={18} /> {club.phone}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ (also sent to Google as FAQ structured data; edit in src/data/faq.ts) -->
+  <section id="faq" class="border-b border-soot/10 bg-parchment-dark py-12 md:py-24">
+    <div class="container-site max-w-3xl">
+      <p class="ribbon ml-3">Good to know</p>
+      <h2 class="mt-4 text-4xl md:text-5xl">Questions &amp; answers</h2>
+      <div class="mt-8 space-y-3 sm:mt-10">
+        {faqs.map((f) => (
+          <details class="framed group bg-parchment p-5">
+            <summary class="flex cursor-pointer list-none items-start justify-between gap-4 font-display text-lg tracking-wide [&::-webkit-details-marker]:hidden">
+              {f.q}
+              <Icon name="chevron" size={20} class="mt-1 shrink-0 text-banner-700 transition-transform group-open:rotate-180" />
+            </summary>
+            <p class="mt-3 text-soot/80">{f.a}</p>
+          </details>
+        ))}
       </div>
     </div>
   </section>

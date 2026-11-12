@@ -21,6 +21,20 @@ npm run build    # outputs to dist/
 | Booking form | `src/pages/book.astro` (submits to Formspree `mblzkjyd`) |
 | Google rating, Facebook "% recommend" & quoted reviews | `src/data/reviews.ts` |
 | Privacy policy settings (retention periods, last-updated date) | `src/data/privacy.ts` |
+| FAQ (homepage + Google FAQ data + `llms.txt`) | `src/data/faq.ts` |
+| Facilities, other names, summary used by Google & AI assistants | `src/data/club.ts` |
+
+### Search engines & AI assistants (SEO)
+
+All of this is generated from the data files above, so keeping those files accurate keeps Google and AI answers accurate.
+
+- **Page titles, descriptions, social previews:** `src/layouts/Layout.astro` (defaults) and each page's `<Layout title=… description=…>`.
+- **Structured data (JSON-LD):** the club details (address, phone, hours, facilities, socials, booking link) live in `Layout.astro`.
+  Events and the FAQ are on `index.astro`, and the function-room service is on `book.astro`.
+  Recurring events only get schedule data if their `.md` file has a `schedule:` line (see `_TEMPLATE.md.example`).
+- **`/llms.txt`:** a plain-text summary for ChatGPT, Claude, Perplexity and others, built by `src/pages/llms.txt.ts`.
+- **`public/robots.txt`:** allows all search engines and AI crawlers, and points to the sitemap (made automatically by `@astrojs/sitemap`).
+- **Google Business Profile:** keep the hours, phone and address there identical to `src/data/club.ts`.
 
 ### Adding an event (can be done on github.com, no code tools needed)
 

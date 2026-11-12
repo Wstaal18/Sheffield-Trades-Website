@@ -7,4 +7,5 @@ poster: bingo
 posterText: Musical Bingo
 order: 2
 featured: true
+schedule: { days: [0], start: '19:00', end: '24:00' }
 ---

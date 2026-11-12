@@ -6,4 +6,5 @@ summary: Play casually or competitively in a friendly club-night atmosphere. All
 image: ../../assets/images/chess.jpg
 imageAlt: Chess pieces on a board
 order: 4
+schedule: { days: [2], start: '19:30' }
 ---

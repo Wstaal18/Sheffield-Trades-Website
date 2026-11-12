@@ -4,6 +4,28 @@ import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
 import { club } from '../data/club';
 
+const site = Astro.site!.toString();
+const bookingSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'Function room hire',
+    serviceType: 'Event venue hire',
+    description: "Function room hire for private parties and events of up to 120 guests, available on Thursdays and Fridays: birthdays (22nd and over), anniversaries, retirement do's and wakes.",
+    provider: { '@id': `${site}#club` },
+    areaServed: 'Sheffield',
+    url: new URL('/book/', Astro.site).toString(),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: site },
+      { '@type': 'ListItem', position: 2, name: 'Request a Booking', item: new URL('/book/', Astro.site).toString() },
+    ],
+  },
+];
+
 const FORMSPREE = 'https://formspree.io/f/mblzkjyd';
 
 const steps = [
@@ -13,8 +35,9 @@ const steps = [
 ];
 ---
 <Layout
-  title="Request a Booking"
-  description="Request the function room at Sheffield Trades & Labour Club for birthdays, anniversaries, retirements and wakes. Up to 120 guests, Thursdays and Fridays."
+  title="Function Room Hire & Party Bookings"
+  description="Hire the function room at Sheffield Trades & Labour Club, 200 Duke Street, Sheffield S2. Birthdays (22+), anniversaries, retirement do's and wakes for up to 120 guests, Thursdays and Fridays."
+  schema={bookingSchema}
 >
   <PageHero
     eyebrow="Room hire"
