@@ -12,6 +12,7 @@ import RatingBadge from '../components/RatingBadge.astro';
 import MapEmbed from '../components/MapEmbed.astro';
 import SwipeHint from '../components/SwipeHint.astro';
 import hero from '../assets/images/club-hero.jpeg';
+import darts from '../assets/images/fidodarts.jpeg';
 import { club, openingHours, formatSessions } from '../data/club';
 import { getEvents, getFacebookPosts } from '../lib/content';
 import { faqs } from '../data/faq';
@@ -176,6 +177,43 @@ const faqSchema = {
       <div class="mt-8 sm:mt-10">
         <WeekSchedule />
       </div>
+    </div>
+  </section>
+
+  <!-- Digital darts (Fidodarts auto-scoring board) -->
+  <section id="darts" class="grain bg-soot py-12 text-parchment md:py-24">
+    <div class="container-site grid items-center gap-10 md:grid-cols-[1fr_1.1fr] md:gap-14">
+      <div class="md:order-2">
+        <p class="ribbon ml-3">New at the club</p>
+        <h2 class="mt-4 text-4xl md:text-5xl">Digital darts, real board</h2>
+        <p class="mt-4 max-w-xl text-lg text-parchment/80">
+          We've installed a Fidodarts auto-scoring darts system. You throw proper steel-tip darts at a real bristle board,
+          and it keeps score for you on the big screen. No chalk and no mental maths.
+        </p>
+        <ul class="mt-6 space-y-3">
+          {[
+            'Every dart scored automatically and shown on the TV',
+            'Finishes suggested for you when you\'re on a checkout',
+            'Play as a guest, or scan the QR code with the free Fidodarts app to save your scores and stats',
+            'Plenty of games to pick from, for one player or a group',
+          ].map((t) => (
+            <li class="flex items-start gap-3">
+              <Icon name="check" size={20} class="mt-0.5 shrink-0 text-brass-300" />
+              <span>{t}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-6 text-parchment/70">Come down and have a go. Ask at the bar if you'd like a hand getting started.</p>
+      </div>
+      <figure class="md:order-1">
+        <Image
+          src={darts}
+          alt="The Fidodarts auto-scoring dartboard at the club, with the scoring screen mounted on the wall beside it"
+          widths={[400, 700, 1000]}
+          sizes="(min-width: 768px) 45vw, 100vw"
+          class="aspect-[4/5] w-full border-4 border-parchment/10 object-cover shadow-2xl md:aspect-[3/4]"
+        />
+      </figure>
     </div>
   </section>
 

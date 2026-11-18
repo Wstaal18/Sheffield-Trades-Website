@@ -28,13 +28,13 @@ export const club = {
     'Concert room with live entertainment and live music',
     'Live sport on Sky Sports and TNT Sports',
     'Pool table',
-    'Darts',
+    'Fidodarts auto-scoring darts board (steel-tip darts, scores shown on screen)',
     'Bingo and karaoke',
     'Private function room for up to 120 guests',
   ],
   /** Plain-English summary used for search engines and AI assistants. */
   summary:
-    "A friendly members' social club and bar on Duke Street, Sheffield, established in 1981. Known for cheap drinks deals for members, a daily happy hour, bingo, karaoke, live turns and live music, live sport on Sky Sports and TNT Sports, pool and darts, a weekly chess club, kids karate classes, and function room hire for parties and events of up to 120 guests.",
+    "A friendly members' social club and bar on Duke Street, Sheffield, established in 1981. Known for cheap drinks deals for members, a daily happy hour, bingo, karaoke, live turns and live music, live sport on Sky Sports and TNT Sports, pool, a Fidodarts auto-scoring darts board, a weekly chess club, kids karate classes, and function room hire for parties and events of up to 120 guests.",
   /** Stops AI tools mixing the club up with the trade union council of a similar name. */
   disambiguation:
     "A members' social club and bar at 200 Duke Street, Sheffield. Not the same organisation as the Sheffield Trades Union Council (historically the Sheffield Trades and Labour Council), which is a trade union body.",

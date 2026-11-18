@@ -30,7 +30,11 @@ export const faqs: { q: string; a: string }[] = [
   },
   {
     q: 'Do you show live sport?',
-    a: 'Yes. We show live sport on Sky Sports and TNT Sports, and we have pool and darts too.',
+    a: 'Yes. We show live sport on Sky Sports and TNT Sports. We also have a pool table and a Fidodarts auto-scoring darts board.',
+  },
+  {
+    q: 'Do you have a darts board?',
+    a: 'Yes. We have a Fidodarts digital darts system: you throw real steel-tip darts at a proper bristle board and it scores every dart automatically on the TV screen. You can play as a guest, or log in with the free Fidodarts app to save your scores and stats.',
   },
   {
     q: 'When is bingo on?',
